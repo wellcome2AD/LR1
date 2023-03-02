@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.lr1.MainController">
+   <children>
+      <Line endX="14.0" endY="380.0" layoutX="352.0" layoutY="-30.0" startX="14.0" startY="30.0" />
+      <Line endX="443.5" startX="443.5" startY="351.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f7ff1f" height="406.0" layoutX="-1.0" layoutY="-4.0" stroke="BLACK" strokeType="INSIDE" width="54.0" />
+      <Polygon fill="DODGERBLUE" layoutX="64.0" layoutY="167.0" points="-50.0, 40.0, -28.0, 8.0, -50.0, -22.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="small_target" layoutX="443.0" layoutY="175.0" radius="19.798989" stroke="BLACK" strokeType="INSIDE">
+         <fill>
+            <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color red="0.9210526347160339" green="0.06396199017763138" blue="0.06396199017763138" />
+                     </color>
+                  </Stop>
+                  <Stop offset="0.007662835249042145">
+                     <color>
+                        <Color red="0.9210526347160339" green="0.06396199017763138" blue="0.06396199017763138" />
+                     </color>
+                  </Stop>
+                  <Stop offset="0.6053639846743295">
+                     <color>
+                        <Color red="0.9736841917037964" green="0.9736841917037964" blue="0.9736841917037964" />
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color red="0.9736841917037964" green="0.9736841917037964" blue="0.9736841917037964" />
+                     </color>
+                  </Stop>
+               </stops>
+            </RadialGradient>
+         </fill></Circle>
+      <Circle fx:id="big_target" layoutX="366.0" layoutY="175.0" radius="28.0" stroke="BLACK" strokeType="INSIDE">
+         <fill>
+            <RadialGradient centerX="0.5" centerY="0.5" radius="0.5">
+               <stops>
+                  <Stop>
+                     <color>
+                        <Color red="0.9210526347160339" green="0.06396199017763138" blue="0.06396199017763138" />
+                     </color>
+                  </Stop>
+                  <Stop offset="0.007662835249042145">
+                     <color>
+                        <Color red="0.9210526347160339" green="0.06396199017763138" blue="0.06396199017763138" />
+                     </color>
+                  </Stop>
+                  <Stop offset="0.6053639846743295">
+                     <color>
+                        <Color red="0.9736841917037964" green="0.9736841917037964" blue="0.9736841917037964" />
+                     </color>
+                  </Stop>
+                  <Stop offset="1.0">
+                     <color>
+                        <Color red="0.9736841917037964" green="0.9736841917037964" blue="0.9736841917037964" />
+                     </color>
+                  </Stop>
+               </stops>
+            </RadialGradient>
+         </fill></Circle>
+      <Line fx:id="arrow1" endX="-69.5" layoutX="172.0" layoutY="176.0" startX="-104.0" />
+      <Polygon fx:id="arrow2" layoutX="160.0" layoutY="208.0" points="-57.5, -24.5, -44.0, -31.0, -57.5, -39.0" stroke="BLACK" strokeType="INSIDE" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="406.0" layoutX="471.0" layoutY="-5.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="50.0" layoutX="-5.0" layoutY="351.0" stroke="BLACK" strokeType="INSIDE" width="477.0" />
+      <Button fx:id="start_game_button" layoutX="14.0" layoutY="364.0" mnemonicParsing="false" onAction="#onStartGameButtonClick" text="Начало игры" />
+      <Button fx:id="stop_game_button" layoutX="109.0" layoutY="364.0" mnemonicParsing="false" onAction="#onStopGameButtonClick" text="Остановить игру" />
+      <Button fx:id="shot_button" disable="true" layoutX="227.0" layoutY="364.0" mnemonicParsing="false" onAction="#OnShotButtonClick" text="Выстрел" />
+      <Label layoutX="479.0" layoutY="14.0" text="Счёт игрока:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="scores" layoutX="479.0" layoutY="35.0" />
+      <Label layoutX="479.0" layoutY="58.0" text="Выстрелов:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="shots" layoutX="479.0" layoutY="79.0" text="0" />
+   </children>
+</Pane>

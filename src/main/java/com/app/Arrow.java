@@ -1,4 +1,4 @@
-package com.example.lr1;
+package com.app;
 
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;

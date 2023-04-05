@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.lr1.MainController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.app.MainController">
    <children>
       <Line endX="14.0" endY="380.0" layoutX="352.0" layoutY="-30.0" startX="14.0" startY="30.0" />
       <Line endX="443.5" startX="443.5" startY="351.0" />
@@ -78,7 +78,7 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="scores" layoutX="479.0" layoutY="35.0" />
+      <Label fx:id="scores" layoutX="479.0" layoutY="35.0" text="0"/>
       <Label layoutX="479.0" layoutY="58.0" text="Выстрелов:">
          <font>
             <Font name="System Bold" size="15.0" />

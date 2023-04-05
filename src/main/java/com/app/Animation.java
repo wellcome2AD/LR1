@@ -1,4 +1,4 @@
-package com.example.lr1;
+package com.app;
 
 import javafx.application.Platform;
 import javafx.scene.shape.Circle;
@@ -6,6 +6,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Animation implements Runnable{
@@ -13,9 +14,9 @@ public class Animation implements Runnable{
     private int speed1, speed2;
     final private Arrow arrow;
     final private AtomicBoolean gameIsRunning, arrowWasShooting;
-    final private Observer mainController;
+    final private ArrayList<Observer> allObservers = new ArrayList<>();
 
-    public Animation(Observer _mainController, Circle _big_target, Circle _small_target, Line arrow_line, Polygon arrow_head){
+    public Animation(Circle _big_target, Circle _small_target, Line arrow_line, Polygon arrow_head){
         big_target = _big_target;
         small_target = _small_target;
         speed1 = 2;
@@ -23,7 +24,9 @@ public class Animation implements Runnable{
         arrow = new Arrow(arrow_line, arrow_head);
         gameIsRunning = new AtomicBoolean(false);
         arrowWasShooting = new AtomicBoolean(false);
-        mainController = _mainController;
+    }
+    public void AddObserver(Observer o){
+        allObservers.add(o);
     }
     public void resetAnimation(){
         gameIsRunning.set(true);
@@ -31,7 +34,7 @@ public class Animation implements Runnable{
         speed2 = speed1 * 2;
         arrow.arrowToStart();
         arrowWasShooting.set(false);
-        Platform.runLater(() -> mainController.ArrowIsShot(false));
+        Platform.runLater(() ->{for (var o : allObservers) o.ArrowIsShot(false);});
     }
     public void stopAnimation(){
         gameIsRunning.set(false);
@@ -69,6 +72,7 @@ public class Animation implements Runnable{
 
             if(arrowWasShooting.get()){
                 Pair<Double, Double> arrowHeadCords = arrow.getHeadCords();
+
                 Pair<Double, Double> target_center_cords = new Pair<>(big_target.getCenterX() + big_target.getLayoutX(), big_target.getCenterY() + big_target.getLayoutY());
                 boolean arrInterBigTarget = doesArrowIntersectCircle(arrowHeadCords, target_center_cords, big_target.getRadius());
 
@@ -78,16 +82,15 @@ public class Animation implements Runnable{
                 if(arrInterBigTarget || arrInterSmallTarget || doesArrowMissTarget(arrowHeadCords.getKey())){
                     if(arrInterBigTarget)
                     {
-                        Platform.runLater(()->mainController.ScoresChanged(5));
+                        Platform.runLater(()-> {for (var o : allObservers) o.ScoresChanged(5);});
                     }
                     else if(arrInterSmallTarget)
                     {
-                        Platform.runLater(()->mainController.ScoresChanged(10));
+                        Platform.runLater(()-> {for (var o : allObservers) o.ScoresChanged(10);});
                     }
                     arrow.arrowToStart();
                     arrowWasShooting.set(false);
-                    Platform.runLater(()->mainController.ShotsChanged());
-                    Platform.runLater(()->mainController.ArrowIsShot(false));
+                    Platform.runLater(()-> {for (var o : allObservers) { o.ShotsChanged(); o.ArrowIsShot(false);}});
                 }
                 else {
                     moveArrow();

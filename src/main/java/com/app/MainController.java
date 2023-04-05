@@ -1,11 +1,15 @@
-package com.example.lr1;
+package com.app;
 
+import com.client.Client;
+import com.client.Request;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+
+import static com.client.Request.message.isNameUnique;
 
 public class MainController implements Observer{
     @FXML
@@ -19,6 +23,21 @@ public class MainController implements Observer{
     @FXML
     public Button shot_button;
     private Animation anim;
+    private Client cl;
+    @FXML
+    protected void initialize(){
+        MyDialog dialog = new MyDialog();
+        dialog.result.ifPresent(name -> cl = new Client(name));
+        cl.ConnectClient();
+        cl.SendToServer(new Request(isNameUnique, cl.getUserName()));
+        cl.HandleResponse(cl.ReceiveFromServer());
+        new Thread(()-> {
+                while(true) {
+                    cl.HandleResponse(cl.ReceiveFromServer());
+                }
+            }
+        );
+    }
     @FXML
     protected void onStartGameButtonClick() {
         scores.setText("0");
@@ -27,12 +46,12 @@ public class MainController implements Observer{
         small_target.setCenterY(0);
 
         if(anim == null){
-            anim = new Animation(this, big_target, small_target, arrow1, arrow2);
+            anim = new Animation(big_target, small_target, arrow1, arrow2);
+            anim.AddObserver(this);
             Thread anim_thread = new Thread(anim);
             anim_thread.start();
             shot_button.setDisable(false);
         }
-
         anim.resetAnimation();
     }
     @FXML

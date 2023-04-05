@@ -1,4 +1,4 @@
-package com.example.lr1;
+package com.app;
 
 public interface Observer {
     public void ScoresChanged(int scores);

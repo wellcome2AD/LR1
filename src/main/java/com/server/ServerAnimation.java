@@ -1,5 +1,9 @@
-package com.app;
+package com.server;
 
+import com.app.Arrow;
+import com.app.Observer;
+import com.app.Player;
+import com.app.target;
 import javafx.application.Platform;
 import javafx.scene.shape.Circle;
 import javafx.util.Pair;
@@ -7,7 +11,7 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Animation implements Runnable{
+public class ServerAnimation implements Runnable {
     final private Circle big_target, small_target;
     private int speed1, speed2;
     private Player player;
@@ -15,7 +19,7 @@ public class Animation implements Runnable{
     final private AtomicBoolean gameIsRunning, arrowWasShooting;
     final private ArrayList<Observer> allObservers = new ArrayList<>();
 
-    public Animation(Circle _big_target, Circle _small_target, Player p){
+    public ServerAnimation(Circle _big_target, Circle _small_target, Player p){
         big_target = _big_target;
         small_target = _small_target;
         speed1 = 2;
@@ -24,6 +28,7 @@ public class Animation implements Runnable{
         gameIsRunning = new AtomicBoolean(false);
         arrowWasShooting = new AtomicBoolean(false);
     }
+    public Player GetPlayer() { return player; }
     public void AddObserver(Observer o){
         allObservers.add(o);
     }
@@ -33,31 +38,41 @@ public class Animation implements Runnable{
         speed2 = speed1 * 2;
         arrow.arrowToStart();
         arrowWasShooting.set(false);
-        Platform.runLater(() ->{for (var o : allObservers) o.ArrowIsShot(false);});
+        Platform.runLater(() ->{
+            for (var o : allObservers)
+                o.ArrowIsShot(false);
+        });
     }
     public void stopAnimation(){
         gameIsRunning.set(false);
     }
-    public void makeShot(){
-        arrowWasShooting.set(true);
-    }
+    public void makeShot(){ arrowWasShooting.set(true); }
     private void moveBigTarget(int speed)
     {
         big_target.setCenterY(big_target.getCenterY() + speed);
+        for(var o : allObservers) {
+            o.TargetMove(player.GetUserName(), target.bigTarget, big_target.getCenterY());
+        }
     }
     private void moveSmallTarget(int speed)
     {
         small_target.setCenterY(small_target.getCenterY() + speed);
+        for(var o : allObservers) {
+            o.TargetMove(player.GetUserName(), target.smallTarget, small_target.getCenterY());
+        }
     }
     private void moveArrow()
     {
         arrow.moveArrow();
+        for(var o : allObservers) {
+            o.ArrowMove(player.GetUserName(), arrow.GetHeadCords(), arrow.GetLineCords());
+        }
     }
     static private boolean doesArrowIntersectCircle(Pair<Double, Double> arrow_head_cords,
-                                          Pair<Double, Double> circle_center_cords,
-                                          double circle_radius){
+                                                    Pair<Double, Double> circle_center_cords,
+                                                    double circle_radius){
         return Math.pow((arrow_head_cords.getKey() - circle_center_cords.getKey()), 2) +
-               Math.pow((arrow_head_cords.getValue() - circle_center_cords.getValue()), 2) <= Math.pow(circle_radius, 2);
+                Math.pow((arrow_head_cords.getValue() - circle_center_cords.getValue()), 2) <= Math.pow(circle_radius, 2);
     }
     static private boolean doesArrowMissTarget(double arrow_head_x_cord){
         return arrow_head_x_cord >= 470;
@@ -82,12 +97,15 @@ public class Animation implements Runnable{
                     if(arrInterBigTarget)
                     {
                         Platform.runLater(()-> {
-                            for (var o : allObservers)
-                                o.ScoresChanged(player.GetUserName(), 5);});
+                            for (var o : allObservers) o.ScoresChanged(player.GetUserName(), 5);
+                        });
                     }
                     else if(arrInterSmallTarget)
                     {
-                        Platform.runLater(()-> {for (var o : allObservers) o.ScoresChanged(player.GetUserName(), 10);});
+                        Platform.runLater(()-> {
+                            for (var o : allObservers)
+                                o.ScoresChanged(player.GetUserName(), 10);
+                        });
                     }
                     arrow.arrowToStart();
                     arrowWasShooting.set(false);
@@ -121,3 +139,4 @@ public class Animation implements Runnable{
         }
     }
 }
+

@@ -1,5 +1,6 @@
 package com.server;
 
+import com.app.Observer;
 import com.client.Client;
 
 import java.io.IOException;
@@ -14,10 +15,15 @@ import java.util.concurrent.Executors;
 public class Server {
     int port = 3124;
     InetAddress ip = null;
-    ExecutorService service = Executors.newCachedThreadPool();
-
     ArrayList<ClientAtServer> allClientsHandlers = new ArrayList<>();
     ArrayList<String> allNames = new ArrayList<>();
+    final private ArrayList<Observer> allObservers = new ArrayList<>();
+    public void AddObserver(Observer o) {
+        allObservers.add(o);
+        for(var clh : allClientsHandlers){
+            clh.AddObserver(o);
+        }
+    }
     void StartServer(){
         int number = 0;
 
@@ -34,7 +40,7 @@ public class Server {
             while(true){
                 ++number;
                 Socket cs =  ss.accept();
-                System.out.println("Client connected. Port " + cs.getPort());
+                System.out.println("Client #" + number + " is connected. Port " + cs.getPort());
                 ClientAtServer c = new ClientAtServer(cs, this);
                 allClientsHandlers.add(c);
                 new Thread(c).start();

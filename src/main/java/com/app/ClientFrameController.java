@@ -9,6 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 
 import static com.client.Request.message.isNameUnique;
@@ -25,8 +27,7 @@ public class ClientFrameController implements Observer, FrameController{
     @FXML
     private Label player0_scores, player1_scores, player2_scores, player3_scores, player0_shots,  player1_shots,  player2_shots,  player3_shots;
     @FXML
-    public Button shot_button;
-    private ArrayList<Animation> allAnims = new ArrayList<>();
+    public Button shot_button, start_game_button, stop_game_button;
     private Client cl;
     private ArrayList<Player> allPlayers = new ArrayList<>();
     @FXML
@@ -47,46 +48,35 @@ public class ClientFrameController implements Observer, FrameController{
     @FXML
     protected void onStartGameButtonClick() {
         cl.SendToServer(new Request(Request.message.playerIsReady, cl.getUserName(), null));
-        for (var player : allPlayers) {
-            player.scores.setText("0");
-            player.shots.setText("0");
-        }
-        big_target.setCenterY(0);
-        small_target.setCenterY(0);
-
-        cl.SendToServer(new Request(Request.message.playerIsReady, allPlayers.get(0).GetUserName(), null));
-        /*if(allAnims.size() == 0){
-            int i = 0;
-            for(var p : allPlayers) {
-                allAnims.add(new Animation(big_target, small_target, p));
-                allAnims.get(i).AddObserver(this);
-                new Thread(allAnims.get(i)).start();
-            }
-            shot_button.setDisable(false);
-        }
-        for(var a : allAnims) {
-            a.resetAnimation();
-        }*/
+        start_game_button.setDisable(true);
+        shot_button.setDisable(false);
     }
     @FXML
     protected void onStopGameButtonClick()
     {
-        cl.SendToServer(new Request(Request.message.pauseGame, allPlayers.get(0).GetUserName(), null));
+        cl.SendToServer(new Request(Request.message.pauseGame, cl.getUserName(), null));
+        start_game_button.setDisable(false);
         shot_button.setDisable(true);
     }
     @FXML
     protected void OnShotButtonClick() {
-        //anim.makeShot();
-        cl.SendToServer(new Request(Request.message.arrowIsShot, allPlayers.get(0).GetUserName(), null));
+        cl.SendToServer(new Request(Request.message.arrowIsShot, cl.getUserName(), null));
         shot_button.setDisable(true);
     }
     @Override
     public void IncreaseScores(int _scores) { IncreaseScores(_scores,  allPlayers.get(0)); }
     @Override
-    public void IncreaseScores(int _scores, Player p){ p.IncreaseScores(_scores);}
+    public void IncreaseScores(int _scores, Player p){
+        var scores_label = p.GetScoresLabel();
+        scores_label.setText(String.valueOf(Integer.parseInt(scores_label.getText()) + _scores));
+    }
     @Override
     public void IncreaseShots(){ IncreaseShots(allPlayers.get(0));}
-
+    @Override
+    public void IncreaseShots(Player p){
+        var shots_label = p.GetShotsLabel();
+        shots_label.setText(String.valueOf(Integer.parseInt(shots_label.getText()) + 1));
+    }
     @Override
     public void AddPlayer(String s) {
         for(var p : allPlayers) {
@@ -122,16 +112,39 @@ public class ClientFrameController implements Observer, FrameController{
     }
 
     @Override
-    public void IncreaseShots(Player p){ p.IncreaseShots();}
-
-    @Override
-    public void ScoresChanged(int scores) {
-        IncreaseScores(scores);
+    public void ArrowMove(String user_name, ArrayList<Double> headCords, Pair<Double, Double> lineCords) {
+        Player player = null;
+        for(var p : allPlayers) {
+            if (p.GetUserName().equals(user_name)) { // самого себя нужно добавить только один раз
+                player = p;
+            }
+        }
+        player.GetArrow().SetHeadCords(headCords);
+        player.GetArrow().SetLineCoords(lineCords);
     }
 
     @Override
-    public void ShotsChanged() {
-        IncreaseShots();
+    public void ScoresChanged(String userName, int scores) {
+        Player player = null;
+        for(var p : allPlayers) {
+            if (p.GetUserName().equals(userName)) {
+                player = p;
+                break;
+            }
+        }
+        IncreaseScores(scores, player);
+    }
+
+    @Override
+    public void ShotsChanged(String userName) {
+        Player player = null;
+        for(var p : allPlayers) {
+            if (p.GetUserName().equals(userName)) {
+                player = p;
+                break;
+            }
+        }
+        IncreaseShots(player);
     }
     @Override
     public void ArrowIsShot(boolean value){

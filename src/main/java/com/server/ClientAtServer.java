@@ -1,13 +1,16 @@
 package com.server;
 
+import com.app.Observer;
 import com.client.Client;
 import com.client.Request;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javafx.application.Platform;
 import javafx.util.Pair;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientAtServer implements Runnable{
     Socket cs;
@@ -15,6 +18,10 @@ public class ClientAtServer implements Runnable{
     DataOutputStream dos;
     DataInputStream dis;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    final private ArrayList<Observer> allObservers = new ArrayList<>();
+    public void AddObserver(Observer o) {
+        allObservers.add(o);
+    }
     public ClientAtServer(Socket _cs, Server _ms){
         cs = _cs;
         s = _ms;
@@ -67,8 +74,12 @@ public class ClientAtServer implements Runnable{
             case getAllPlayers -> {
                 SendToSocket(new Response(Response.respType.allPlayers, r.getClientName(), s.allNames));
             }
+            case playerIsReady -> {
+                break;
+            }
             case arrowIsShot -> {
-                s.Broadcast(new Response(Response.respType.arrowCords, r.getClientName(), new Pair<Float, Float>(0.0F, 0.0F))); // to do
+                for (var o : allObservers)
+                    Platform.runLater(() ->{ o.OnShot(r.getClientName());});
             }
         }
     }

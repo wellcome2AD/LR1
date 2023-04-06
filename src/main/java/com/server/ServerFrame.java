@@ -14,13 +14,9 @@ public class ServerFrame extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Меткий стрелок");
         stage.setScene(scene);
-        stage.show();
     }
 
     public static void StartApp() {
         launch();
     }
-    /*public static void main(String args[]) {
-        launch();
-    }*/
 }

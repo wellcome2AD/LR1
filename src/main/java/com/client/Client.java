@@ -112,21 +112,43 @@ public class Client {
                 }
             }
             case bigTargetCords -> {
-                break;
+                var yCord = (Double)r.getData();
+                for (var o : allObservers) {
+                    Platform.runLater(() -> {
+                        o.TargetMove(r.getClientName(), target.bigTarget, yCord);
+                    });
+                }
             }
             case smallTargetCords -> {
-                break;
+                var yCord = (Double)r.getData();
+                for (var o : allObservers) {
+                    Platform.runLater(() -> {
+                        o.TargetMove(r.getClientName(), target.smallTarget, yCord);
+                    });
+                }
             }
             case arrowCords -> {
-                break;
+                var listCords = (Pair<ArrayList<Double>, Pair<Double, Double>>)r.getData();
+                var headCords = listCords.getKey();
+                var lineCords = listCords.getValue();
+                for (var o : allObservers) {
+                    Platform.runLater(() -> {
+                        o.ArrowMove(r.getClientName(), headCords, lineCords);
+                    });
+                }
             }
             case scoresNum -> {
-                for (var o : allObservers)
-                    Platform.runLater(() ->{o.ScoresChanged((Integer) r.getData());});
+                for (var o : allObservers) {
+                    Platform.runLater(() -> {
+                        o.ScoresChanged(r.getClientName(), (Integer) r.getData());
+                    });
+                }
             }
             case shotsNum -> {
                 for (var o : allObservers)
-                    Platform.runLater(() ->{o.ShotsChanged();});
+                    Platform.runLater(() -> {
+                        o.ShotsChanged(r.getClientName());
+                    });
             }
             default -> throw new IllegalStateException("Unexpected value: " + response_type);
         }

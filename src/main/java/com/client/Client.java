@@ -115,7 +115,7 @@ public class Client {
                 var yCord = (Double)r.getData();
                 for (var o : allObservers) {
                     Platform.runLater(() -> {
-                        o.TargetMove(r.getClientName(), target.bigTarget, yCord);
+                        o.TargetMove(target.bigTarget, yCord);
                     });
                 }
             }
@@ -123,7 +123,7 @@ public class Client {
                 var yCord = (Double)r.getData();
                 for (var o : allObservers) {
                     Platform.runLater(() -> {
-                        o.TargetMove(r.getClientName(), target.smallTarget, yCord);
+                        o.TargetMove(target.smallTarget, yCord);
                     });
                 }
             }
@@ -145,10 +145,18 @@ public class Client {
                 }
             }
             case shotsNum -> {
-                for (var o : allObservers)
+                for (var o : allObservers) {
                     Platform.runLater(() -> {
                         o.ShotsChanged(r.getClientName());
                     });
+                }
+            }
+            case pauseGame -> {
+                for (var o : allObservers) {
+                    Platform.runLater(() -> {
+                        o.ShotsChanged(r.getClientName());
+                    });
+                }
             }
             default -> throw new IllegalStateException("Unexpected value: " + response_type);
         }

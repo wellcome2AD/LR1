@@ -51,14 +51,14 @@ public class ServerAnimation implements Runnable {
     {
         big_target.setCenterY(big_target.getCenterY() + speed);
         for(var o : allObservers) {
-            o.TargetMove(player.GetUserName(), target.bigTarget, big_target.getCenterY());
+            o.TargetMove(target.bigTarget, big_target.getCenterY());
         }
     }
     private void moveSmallTarget(int speed)
     {
         small_target.setCenterY(small_target.getCenterY() + speed);
         for(var o : allObservers) {
-            o.TargetMove(player.GetUserName(), target.smallTarget, small_target.getCenterY());
+            o.TargetMove(target.smallTarget, small_target.getCenterY());
         }
     }
     private void moveArrow()

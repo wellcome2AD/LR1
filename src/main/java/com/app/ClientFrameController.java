@@ -61,7 +61,7 @@ public class ClientFrameController implements Observer, FrameController{
     @FXML
     protected void OnShotButtonClick() {
         cl.SendToServer(new Request(Request.message.arrowIsShot, cl.getUserName(), null));
-        shot_button.setDisable(true);
+        OnPauseGame();
     }
     @Override
     public void IncreaseScores(int _scores) { IncreaseScores(_scores,  allPlayers.get(0)); }
@@ -115,12 +115,31 @@ public class ClientFrameController implements Observer, FrameController{
     public void ArrowMove(String user_name, ArrayList<Double> headCords, Pair<Double, Double> lineCords) {
         Player player = null;
         for(var p : allPlayers) {
-            if (p.GetUserName().equals(user_name)) { // самого себя нужно добавить только один раз
+            if (p.GetUserName().equals(user_name)) {
                 player = p;
             }
         }
         player.GetArrow().SetHeadCords(headCords);
         player.GetArrow().SetLineCoords(lineCords);
+    }
+
+    @Override
+    public void TargetMove(target targetType, double yCord) {
+        if(targetType == target.smallTarget)
+            small_target.setCenterY(yCord);
+        else
+            big_target.setCenterY(yCord);
+
+    }
+
+    @Override
+    public void OnPauseGame() {
+        shot_button.setDisable(true);
+    }
+
+    @Override
+    public void OnShot(String userName) {
+        shot_button.setDisable(true);
     }
 
     @Override

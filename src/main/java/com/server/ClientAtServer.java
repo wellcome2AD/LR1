@@ -77,6 +77,11 @@ public class ClientAtServer implements Runnable{
             case playerIsReady -> {
                 break;
             }
+            case pauseGame -> {
+                for (var o : allObservers)
+                    Platform.runLater(() ->{ o.OnPauseGame();});
+                s.Broadcast(new Response(Response.respType.pauseGame, null, null));
+            }
             case arrowIsShot -> {
                 for (var o : allObservers)
                     Platform.runLater(() ->{ o.OnShot(r.getClientName());});

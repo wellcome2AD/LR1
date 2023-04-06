@@ -10,6 +10,7 @@ public interface Observer {
     public void ArrowIsShot(boolean value);
     public void AddPlayer(String user_name);
     public void ArrowMove(String user_name, ArrayList<Double> headCords, Pair<Double, Double> lineCords);
-    public void TargetMove(String userName, target targetType, double yCord);
+    public void TargetMove(target targetType, double yCord);
+    public void OnPauseGame();
     public void OnShot(String userName);
 }

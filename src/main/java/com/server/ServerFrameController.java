@@ -27,8 +27,6 @@ public class ServerFrameController implements Observer, FrameController {
     private Polygon arrow2;
     @FXML
     private Label scores, shots;
-    @FXML
-    public Button shot_button;
     private ArrayList<Player> allPlayers = new ArrayList<>(); // Player содержатся в Animation
     private ArrayList<ServerAnimation> allAnims;
     private Server s;
@@ -38,7 +36,7 @@ public class ServerFrameController implements Observer, FrameController {
         s.AddObserver(this);
         s.StartServer();
     }
-    protected void onStartGame(String playerName) {
+    public void OnStartGame(String playerName) {
         Player player = null;
         for(var p : allPlayers){
             if(p.GetUserName().equals(playerName)) {
@@ -65,12 +63,12 @@ public class ServerFrameController implements Observer, FrameController {
             a.resetAnimation();
         }*/
     }
-    protected void onStopGame()
+    @Override
+    public void OnPauseGame()
     {
         for(var a : allAnims) {
             a.stopAnimation();
         }
-        shot_button.setDisable(true);
     }
     @Override
     public void OnShot(String userName){
@@ -82,7 +80,6 @@ public class ServerFrameController implements Observer, FrameController {
             }
         }
         anim.makeShot();
-        shot_button.setDisable(true);
     }
 
     @Override
@@ -109,9 +106,7 @@ public class ServerFrameController implements Observer, FrameController {
         IncreaseShots(player);
     }
     @Override
-    public void ArrowIsShot(boolean value){
-        shot_button.setDisable(value);
-    }
+    public void ArrowIsShot(boolean value) {} // отсутствует реализация для серверного контроллера
 
     @Override
     public void IncreaseScores(int _scores) { IncreaseScores(_scores,  allPlayers.get(0)); }
@@ -149,15 +144,8 @@ public class ServerFrameController implements Observer, FrameController {
     }
 
     @Override
-    public void TargetMove(String userName, target targetType, double yCord) {
-        Player player = null;
-        for(var p : allPlayers) {
-            if (p.GetUserName().equals(userName)) {
-                player = p;
-                break;
-            }
-        }
+    public void TargetMove(target targetType, double yCord) {
         var rtype = targetType == target.smallTarget ? smallTargetCords : bigTargetCords;
-        s.Broadcast(new Response(rtype, player.GetUserName(), yCord));
+        s.Broadcast(new Response(rtype, null, yCord));
     }
 }

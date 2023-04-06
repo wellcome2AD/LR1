@@ -62,7 +62,10 @@ public class ClientAtServer implements Runnable{
                     s.AddName(client_name);
                 }
                 SendToSocket(new Response(Response.respType.isNameUnique, client_name, isNameUnique));
-                s.Broadcast(new Response(Response.respType.newPlayer, client_name, null));
+                s.Broadcast(new Response(Response.respType.newPlayer, null, client_name));
+            }
+            case getAllPlayers -> {
+                SendToSocket(new Response(Response.respType.allPlayers, r.getClientName(), s.allNames));
             }
             case arrowIsShot -> {
                 s.Broadcast(new Response(Response.respType.arrowCords, r.getClientName(), new Pair<Float, Float>(0.0F, 0.0F))); // to do

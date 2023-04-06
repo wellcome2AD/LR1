@@ -2,14 +2,13 @@ package com.app;
 
 import com.client.Client;
 import com.client.Request;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 
 import static com.client.Request.message.isNameUnique;
@@ -35,6 +34,7 @@ public class ClientFrameController implements Observer, FrameController{
         MyDialog dialog = new MyDialog(null);
         dialog.getResult().ifPresent(name -> cl = new Client(name, this));
         cl.ConnectClient();
+        cl.AddObserver(this);
         cl.SendToServer(new Request(isNameUnique, null, cl.getUserName()));
         cl.HandleResponse(cl.ReceiveFromServer());
         new Thread(()-> {
@@ -42,7 +42,7 @@ public class ClientFrameController implements Observer, FrameController{
                     cl.HandleResponse(cl.ReceiveFromServer());
                 }
             }
-        );
+        ).start();
     }
     @FXML
     protected void onStartGameButtonClick() {
@@ -100,18 +100,22 @@ public class ClientFrameController implements Observer, FrameController{
             case 0 -> {
                 a = new Arrow(player0_arrow1, player0_arrow2);
                 p = new Player(s, a, player0_name, player0_scores, player0_shots);
+                Platform.runLater(() ->player0_name.setText(s));
             }
             case 1 -> {
                 a = new Arrow(player1_arrow1, player1_arrow2);
                 p = new Player(s, a, player1_name, player1_scores, player1_shots);
+                Platform.runLater(() ->player1_name.setText(s));
             }
             case 2 -> {
                 a = new Arrow(player2_arrow1, player2_arrow2);
                 p = new Player(s, a, player2_name, player2_scores, player2_shots);
+                Platform.runLater(() ->player2_name.setText(s));
             }
             case 3 -> {
                 a = new Arrow(player3_arrow1, player3_arrow2);
                 p = new Player(s, a, player3_name, player3_scores, player3_shots);
+                Platform.runLater(() ->player3_name.setText(s));
             }
         }
         allPlayers.add(p);

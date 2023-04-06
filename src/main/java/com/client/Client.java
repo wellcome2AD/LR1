@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.server.Response;
 import com.server.ServerFrameController;
+import javafx.application.Platform;
 import javafx.util.Pair;
 
 import java.io.DataInputStream;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import static com.client.Request.message.isNameUnique;
 
@@ -26,6 +28,7 @@ public class Client {
     private DataInputStream dis;
     private DataOutputStream dos;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    final private ArrayList<Observer> allObservers = new ArrayList<>();
     public Client(String _user_name, FrameController _fc) {
         user_name = _user_name;
         fc = _fc;
@@ -77,6 +80,9 @@ public class Client {
         }
         return r;
     }
+    public void AddObserver(Observer o) {
+        allObservers.add(o);
+    }
     public void HandleResponse(Response r){
         var response_type = r.getRType();
         System.out.println(response_type);
@@ -90,11 +96,20 @@ public class Client {
                 }
                 else{
                     user_name = (String) r.getClientName();
-                    fc.AddPlayer(user_name); // добавляем себя самого первого в список всех игроков
+                    for (var o : allObservers)
+                        Platform.runLater(() ->{ o.AddPlayer(user_name);}); // добавляем себя самого первого в список всех игроков
+                    // сделать pull игроков, подсоединившихся ранее
+                    SendToServer(new Request(Request.message.getAllPlayers, user_name, null));
                 }
             }
             case newPlayer -> {
-                fc.AddPlayer(r.getClientName());
+                Platform.runLater(() ->fc.AddPlayer((String)r.getData()));
+            }
+            case allPlayers -> {
+                for (var name : (ArrayList<String>) r.getData()) {
+                    if (name != r.getClientName())
+                        Platform.runLater(() -> { fc.AddPlayer(name);});
+                }
             }
             case bigTargetCords -> {
                 break;
@@ -106,10 +121,12 @@ public class Client {
                 break;
             }
             case scoresNum -> {
-                fc.IncreaseScores((Integer) r.getData());
+                for (var o : allObservers)
+                    Platform.runLater(() ->{o.ScoresChanged((Integer) r.getData());});
             }
             case shotsNum -> {
-                fc.IncreaseShots();
+                for (var o : allObservers)
+                    Platform.runLater(() ->{o.ShotsChanged();});
             }
             default -> throw new IllegalStateException("Unexpected value: " + response_type);
         }

@@ -37,7 +37,6 @@ public class Server {
                 System.out.println("Client connected. Port " + cs.getPort());
                 ClientAtServer c = new ClientAtServer(cs, this);
                 allClientsHandlers.add(c);
-                //service.execute(c);
                 new Thread(c).start();
             }
         } catch (IOException e) {

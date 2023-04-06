@@ -13,7 +13,6 @@ public class Player {
         userName = _userName;
         arrow = _arrow;
         name = _name;
-        name.setText(userName);
         scores = _scores;
         shots = _shots;
     }

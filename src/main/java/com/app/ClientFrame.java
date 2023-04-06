@@ -7,10 +7,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class MainFrame extends Application {
+public class ClientFrame extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainFrame.class.getResource("main-frame.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientFrame.class.getResource("client-frame.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Меткий стрелок");
         stage.setScene(scene);

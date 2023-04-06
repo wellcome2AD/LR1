@@ -1,10 +1,11 @@
 package com.client;
 
-import com.app.MainFrame;
-import com.app.MyDialog;
+import com.app.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.server.Response;
+import com.server.ServerFrameController;
+import javafx.util.Pair;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,21 +13,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
 
 import static com.client.Request.message.isNameUnique;
 
 public class Client {
-    String user_name;
-    int scores, shots;
-    Socket socketAtClient;
-    int port = 3124;
-    InetAddress ip;
-    DataInputStream dis;
-    DataOutputStream dos;
+    private String user_name;
+    private FrameController fc;
+    private int scores, shots;
+    private Socket socketAtClient;
+    private int port = 3124;
+    private InetAddress ip;
+    private DataInputStream dis;
+    private DataOutputStream dos;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public Client(String _user_name) {
+    public Client(String _user_name, FrameController _fc) {
         user_name = _user_name;
+        fc = _fc;
         scores = shots = 0;
     }
     public String getUserName(){
@@ -69,7 +71,7 @@ public class Client {
                 Thread.sleep(10);
             }
             r = gson.fromJson(dis.readUTF(), Response.class);
-            System.out.println("Request: " + dis.readUTF());
+            System.out.println("Response: " + r);
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -81,11 +83,18 @@ public class Client {
         switch (response_type){
             case isNameUnique -> {
                 if((Boolean)r.getData() == false) {
-                    MyDialog dialog = new MyDialog();
+                    MyDialog dialog = new MyDialog("Такое имя уже есть, введите другое");
                     dialog.getResult().ifPresent(name -> user_name = name);
-                    SendToServer(new Request(isNameUnique, user_name));
+                    SendToServer(new Request(isNameUnique, null, user_name));
                     HandleResponse(ReceiveFromServer());
                 }
+                else{
+                    user_name = (String) r.getClientName();
+                    fc.AddPlayer(user_name); // добавляем себя самого первого в список всех игроков
+                }
+            }
+            case newPlayer -> {
+                fc.AddPlayer(r.getClientName());
             }
             case bigTargetCords -> {
                 break;
@@ -97,10 +106,10 @@ public class Client {
                 break;
             }
             case scoresNum -> {
-                break;
+                fc.IncreaseScores((Integer) r.getData());
             }
             case shotsNum -> {
-                break;
+                fc.IncreaseShots();
             }
             default -> throw new IllegalStateException("Unexpected value: " + response_type);
         }
@@ -129,6 +138,6 @@ public class Client {
         cl.ConnectClient();
         * */
 
-        MainFrame.StartApp();
+        ClientFrame.StartApp();
     }
 }

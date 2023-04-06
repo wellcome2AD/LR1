@@ -2,14 +2,12 @@ package com.server;
 
 import com.client.Client;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,8 +16,8 @@ public class Server {
     InetAddress ip = null;
     ExecutorService service = Executors.newCachedThreadPool();
 
-    ArrayList<clientAtServer> allClientsHandlers = new ArrayList<>();
-    ArrayList<Client> allClients = new ArrayList<>();
+    ArrayList<ClientAtServer> allClientsHandlers = new ArrayList<>();
+    ArrayList<String> allNames = new ArrayList<>();
     void StartServer(){
         int number = 0;
 
@@ -37,7 +35,7 @@ public class Server {
                 ++number;
                 Socket cs =  ss.accept();
                 System.out.println("Client connected. Port " + cs.getPort());
-                clientAtServer c = new clientAtServer(cs, this);
+                ClientAtServer c = new ClientAtServer(cs, this);
                 allClientsHandlers.add(c);
                 //service.execute(c);
                 new Thread(c).start();
@@ -46,11 +44,11 @@ public class Server {
             throw new RuntimeException(e);
         }
     }
-    public void AddClient(Client c){
-        allClients.add(c);
+    public void AddName(String s){
+        allNames.add(s);
     }
-    public ArrayList<Client> GetAllClients(){
-        return allClients;
+    public boolean FindName(String name){
+        return allNames.contains(name);
     }
     public void Broadcast(Response r){
         for(var cl : allClientsHandlers){

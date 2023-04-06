@@ -4,18 +4,18 @@ import com.client.Client;
 import com.client.Request;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javafx.util.Pair;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 
-public class clientAtServer implements Runnable{
+public class ClientAtServer implements Runnable{
     Socket cs;
     Server s;
     DataOutputStream dos;
     DataInputStream dis;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public clientAtServer(Socket _cs, Server _ms){
+    public ClientAtServer(Socket _cs, Server _ms){
         cs = _cs;
         s = _ms;
 
@@ -30,20 +30,14 @@ public class clientAtServer implements Runnable{
     @Override
     public void run() {
         try {
-            System.out.println("Hello");
             InputStream is = cs.getInputStream();
-            System.out.println("hihi");
             dis = new DataInputStream(is);
-            System.out.println("haha");
             while(true)
             {
-                System.out.println("1");
                 String s = dis.readUTF();
-                System.out.println("2");
                 Request r = gson.fromJson(s, Request.class);
-                System.out.println("3");
-                HandleRequest(r);
                 System.out.println("Request: " + r);
+                HandleRequest(r);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,21 +55,17 @@ public class clientAtServer implements Runnable{
         var request_type = r.getMessage();
         switch (request_type){
             case isNameUnique -> {
+                System.out.println("HandleRequest: isNameUnique");
                 var client_name = (String)r.getData();
-                boolean isNameUnique = true;
-                for(var c : s.GetAllClients()){
-                    if(c.getUserName().equals(client_name)){
-                        isNameUnique = false;
-                        break;
-                    }
-                }
+                boolean isNameUnique = !s.FindName(client_name);
                 if(isNameUnique) {
-                    s.AddClient(new Client(client_name));
+                    s.AddName(client_name);
                 }
-                SendToSocket(new Response(Response.respType.isNameUnique, isNameUnique));
+                SendToSocket(new Response(Response.respType.isNameUnique, client_name, isNameUnique));
+                s.Broadcast(new Response(Response.respType.newPlayer, client_name, null));
             }
             case arrowIsShot -> {
-
+                s.Broadcast(new Response(Response.respType.arrowCords, r.getClientName(), new Pair<Float, Float>(0.0F, 0.0F))); // to do
             }
         }
     }

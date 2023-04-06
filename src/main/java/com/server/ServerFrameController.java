@@ -1,5 +1,6 @@
-package com.app;
+package com.server;
 
+import com.app.*;
 import com.client.Client;
 import com.client.Request;
 import javafx.fxml.FXML;
@@ -11,7 +12,7 @@ import javafx.scene.shape.Polygon;
 
 import static com.client.Request.message.isNameUnique;
 
-public class MainController implements Observer{
+public class ServerFrameController implements Observer, FrameController {
     @FXML
     private Circle big_target, small_target;
     @FXML
@@ -25,20 +26,6 @@ public class MainController implements Observer{
     private Animation anim;
     private Client cl;
     @FXML
-    protected void initialize(){
-        MyDialog dialog = new MyDialog();
-        dialog.result.ifPresent(name -> cl = new Client(name));
-        cl.ConnectClient();
-        cl.SendToServer(new Request(isNameUnique, cl.getUserName()));
-        cl.HandleResponse(cl.ReceiveFromServer());
-        new Thread(()-> {
-                while(true) {
-                    cl.HandleResponse(cl.ReceiveFromServer());
-                }
-            }
-        );
-    }
-    @FXML
     protected void onStartGameButtonClick() {
         scores.setText("0");
         shots.setText("0");
@@ -46,7 +33,7 @@ public class MainController implements Observer{
         small_target.setCenterY(0);
 
         if(anim == null){
-            anim = new Animation(big_target, small_target, arrow1, arrow2);
+            anim = new Animation(big_target, small_target,null);
             anim.AddObserver(this);
             Thread anim_thread = new Thread(anim);
             anim_thread.start();
@@ -65,20 +52,36 @@ public class MainController implements Observer{
         anim.makeShot();
         shot_button.setDisable(true);
     }
-    public void increaseScores(int _scores){ scores.setText(String.valueOf(Integer.parseInt(scores.getText()) + _scores));}
-    public void increaseShots(){ shots.setText(String.valueOf(Integer.parseInt(shots.getText()) + 1));}
 
     @Override
     public void ScoresChanged(int scores) {
-        increaseScores(scores);
+        IncreaseScores(scores);
     }
 
     @Override
     public void ShotsChanged() {
-        increaseShots();
+        IncreaseShots();
     }
     @Override
     public void ArrowIsShot(boolean value){
         shot_button.setDisable(value);
+    }
+
+    @Override
+    public void IncreaseScores(int _scores, Player p) {
+
+    }
+
+    @Override
+    public void IncreaseShots(Player p) {
+
+    }
+
+    public void IncreaseScores(int _scores){ scores.setText(String.valueOf(Integer.parseInt(scores.getText()) + _scores));}
+    public void IncreaseShots(){ shots.setText(String.valueOf(Integer.parseInt(shots.getText()) + 1));}
+
+    @Override
+    public void AddPlayer(String s) {
+
     }
 }

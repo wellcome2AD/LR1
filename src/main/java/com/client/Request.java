@@ -1,11 +1,13 @@
 package com.client;
 
 public class Request {
-    public enum message {isNameUnique, arrowIsShot};
+    public enum message {isNameUnique, playerIsReady, pauseGame, arrowIsShot};
     private message m;
+    private String clientName;
     private Object data;
-    public Request(message _m, Object _data) {
+    public Request(message _m, String _clientName, Object _data) {
         m = _m;
+        clientName = _clientName;
         data = _data;
     }
 
@@ -14,5 +16,10 @@ public class Request {
     }
     public Object getData() {
         return data;
+    }
+    public String getClientName() { return clientName; }
+    @Override
+    public String toString(){
+        return "Request{" + "m=" + m + ", clientName=" + clientName + ", data=" + data + '}';
     }
 }

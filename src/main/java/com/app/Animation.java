@@ -12,16 +12,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Animation implements Runnable{
     final private Circle big_target, small_target;
     private int speed1, speed2;
-    final private Arrow arrow;
+    private Player player;
+    private Arrow arrow = null;
     final private AtomicBoolean gameIsRunning, arrowWasShooting;
     final private ArrayList<Observer> allObservers = new ArrayList<>();
 
-    public Animation(Circle _big_target, Circle _small_target, Line arrow_line, Polygon arrow_head){
+    public Animation(Circle _big_target, Circle _small_target, Player p){
         big_target = _big_target;
         small_target = _small_target;
         speed1 = 2;
         speed2 = speed1 * 2;
-        arrow = new Arrow(arrow_line, arrow_head);
+        player = p;
         gameIsRunning = new AtomicBoolean(false);
         arrowWasShooting = new AtomicBoolean(false);
     }

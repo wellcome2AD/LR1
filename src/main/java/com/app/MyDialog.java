@@ -10,11 +10,13 @@ import javafx.util.Pair;
 import java.util.Optional;
 
 public class MyDialog {
-    Optional<String> result;
-    public MyDialog(){
+    private Dialog<String> dialog;
+    private Optional<String> result;
+    public MyDialog(String headerText){
         // Create the custom dialog.
-        Dialog<String> dialog = new Dialog<>();
+        dialog = new Dialog<>();
         dialog.setTitle("Ввод имени пользователя");
+        dialog.setHeaderText(headerText);
         // Set the button types.
         ButtonType loginButtonType = new ButtonType("Зарегистрироваться", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType);

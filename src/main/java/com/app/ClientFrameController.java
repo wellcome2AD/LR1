@@ -172,13 +172,15 @@ public class ClientFrameController implements Observer, FrameController{
 
     @Override
     public void ShotsChanged(String playerName) {
-        shot_button.setDisable(false);
         Player player = null;
         for(var p : allPlayers) {
             if (p.GetPlayerName().equals(playerName)) {
                 player = p;
                 break;
             }
+        }
+        if(Integer.parseInt(player.GetScoresLabel().getText()) < 10) {
+            shot_button.setDisable(false);
         }
         IncreaseShots(player);
     }

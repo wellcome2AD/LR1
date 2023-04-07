@@ -157,6 +157,7 @@ public class ServerFrameController implements Observer, FrameController {
 
         if(Integer.parseInt(_scores) >= 10){
             s.Broadcast(new Response(winGame, null, p.GetPlayerName()));
+            OnWinGame(null);
         }
     }
     @Override

@@ -50,7 +50,9 @@ public class ClientAtServer implements Runnable{
     }
     public void SendToSocket(Response r){
         try {
-            dos.writeUTF(gson.toJson(r));
+            synchronized (dos) {
+                dos.writeUTF(gson.toJson(r));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

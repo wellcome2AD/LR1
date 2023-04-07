@@ -66,6 +66,7 @@ public class ClientFrameController implements Observer, FrameController{
     }
     @FXML
     protected void OnShotButtonClick() {
+        shot_button.setDisable(true);
         cl.SendToServer(new Request(Request.message.arrowIsShot, cl.GetPlayerName(), null));
     }
     @Override
@@ -171,6 +172,7 @@ public class ClientFrameController implements Observer, FrameController{
 
     @Override
     public void ShotsChanged(String playerName) {
+        shot_button.setDisable(false);
         Player player = null;
         for(var p : allPlayers) {
             if (p.GetPlayerName().equals(playerName)) {

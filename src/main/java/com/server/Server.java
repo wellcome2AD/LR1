@@ -31,7 +31,7 @@ public class Server {
         }
 
         try {
-            ServerSocket ss = new ServerSocket(port, 2, ip);
+            ServerSocket ss = new ServerSocket(port, 4, ip);
             System.out.println("Server started");
 
             new Thread(() -> {

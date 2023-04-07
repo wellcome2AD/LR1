@@ -26,7 +26,11 @@ public class ClientFrameController implements Observer, FrameController{
     @FXML
     private Label player0_name, player1_name, player2_name, player3_name;
     @FXML
-    private Label player0_scores, player1_scores, player2_scores, player3_scores, player0_shots,  player1_shots,  player2_shots,  player3_shots, winLabel;
+    private Label player0NameLabel, player1NameLabel, player2NameLabel, player3NameLabel;
+    @FXML
+    private Label player0_scores, player1_scores, player2_scores, player3_scores;
+    @FXML
+    private Label player0_shots,  player1_shots,  player2_shots,  player3_shots, winLabel;
     @FXML
     public Button shot_button, start_game_button, stop_game_button;
     private Client cl;
@@ -76,25 +80,28 @@ public class ClientFrameController implements Observer, FrameController{
         shots_label.setText(String.valueOf(Integer.parseInt(shots_label.getText()) + 1));
     }
     @Override
-    public void AddPlayer(String s) {
+    public void AddPlayer(String playerName) {
         ArrayList<Line> arrowLines = new ArrayList<>(Arrays.asList(player0_arrow1, player1_arrow1, player2_arrow1, player3_arrow1));
         ArrayList<Polygon> arrowHeads = new ArrayList<>(Arrays.asList(player0_arrow2, player1_arrow2, player2_arrow2, player3_arrow2));
         ArrayList<Label> nameLabels = new ArrayList<>(Arrays.asList(player0_name, player1_name, player2_name, player3_name));
+        ArrayList<Label> nameLabels1 = new ArrayList<>(Arrays.asList(player0NameLabel, player1NameLabel, player2NameLabel, player3NameLabel));
         ArrayList<Label> scoresLabels = new ArrayList<>(Arrays.asList(player0_scores, player1_scores, player2_scores, player3_scores));
         ArrayList<Label> shotsLabels = new ArrayList<>(Arrays.asList(player0_shots,  player1_shots,  player2_shots,  player3_shots));
 
-        for(var p : allPlayers) {
-            if (p.GetPlayerName().equals(s)) { // самого себя нужно добавить только один раз
-                return;
-            }
-        }
         int playerNumber = allPlayers.size();
         Arrow a = new Arrow(arrowLines.get(playerNumber), arrowHeads.get(playerNumber));
         a.setVisible(true);
 
-        Player p = new Player(s, a, nameLabels.get(playerNumber), scoresLabels.get(playerNumber), shotsLabels.get(playerNumber));
-        nameLabels.get(playerNumber).setText(s);
-        scoresLabels.get(playerNumber).setText("0");
+        Player p = new Player(playerName, a, nameLabels.get(playerNumber), scoresLabels.get(playerNumber), shotsLabels.get(playerNumber));
+        nameLabels.get(playerNumber).setText(playerName);
+        if(playerName.equals(cl.GetPlayerName()))
+            nameLabels.get(playerNumber).setStyle("-fx-font-weight: bold;");
+
+        nameLabels1.get(playerNumber).setText(playerName);
+        if(playerName.equals(cl.GetPlayerName()))
+            nameLabels1.get(playerNumber).setStyle("-fx-font-weight: bold;");
+
+    scoresLabels.get(playerNumber).setText("0");
         shotsLabels.get(playerNumber).setText("0");
         allPlayers.add(p);
     }

@@ -35,14 +35,8 @@ public class Client {
             socketAtClient = new Socket(ip, port);
             System.out.println("Client connected. Port " + socketAtClient.getPort());
 
-            OutputStream os = null;
-            InputStream is = null;
-            synchronized (socketAtClient) {
-                os = socketAtClient.getOutputStream();
-                is = socketAtClient.getInputStream();
-            }
+            var os = socketAtClient.getOutputStream();
             dos = new DataOutputStream(os);
-            dis = new DataInputStream(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -51,9 +45,7 @@ public class Client {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String m_to_s = gson.toJson(m);
         try {
-            synchronized (dos) {
-                dos.writeUTF(m_to_s);
-            }
+            dos.writeUTF(m_to_s);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -61,16 +53,14 @@ public class Client {
     public Response ReceiveFromServer(){
         Response r;
         try {
-            //InputStream is = null;
-            synchronized (dis) {
-                //is = socketAtClient.getInputStream();
-                //}
-                //dis = new DataInputStream(is);
-                while (dis.available() == 0) {
-                    Thread.sleep(10);
-                }
-                r = gson.fromJson(dis.readUTF(), Response.class);
+            InputStream is = socketAtClient.getInputStream();
+            dis = new DataInputStream(is);
+            while(dis.available() == 0)
+            {
+                Thread.sleep(10);
             }
+            r = gson.fromJson(dis.readUTF(), Response.class);
+            System.out.println("Response: " + r);
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -91,17 +81,13 @@ public class Client {
                 }
                 else{
                     playerName = r.getClientName();
-                    for (var o : allObservers)
-                        Platform.runLater(() -> o.AddPlayer(playerName)); // добавляем себя самого первого в список всех игроков
-                    // сделать pull игроков, подсоединившихся ранее
                     SendToServer(new Request(Request.message.getAllPlayers, playerName, null));
                 }
             }
-            case newPlayer -> Platform.runLater(() -> fc.AddPlayer((String)r.getData()));
+            case newPlayer -> Platform.runLater(() -> SendToServer(new Request(Request.message.getAllPlayers, playerName, null)));
             case allPlayers -> {
                 for (var name : (ArrayList<String>) r.getData()) {
-                    if (!name.equals(r.getClientName()))
-                        Platform.runLater(() -> fc.AddPlayer(name));
+                    Platform.runLater(() -> fc.AddPlayer(name));
                 }
             }
             case bigTargetCords -> {

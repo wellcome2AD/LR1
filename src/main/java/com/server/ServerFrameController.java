@@ -1,13 +1,11 @@
 package com.server;
 
 import com.app.*;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +21,8 @@ public class ServerFrameController implements Observer, FrameController {
     private Polygon player0_arrow2, player1_arrow2, player2_arrow2, player3_arrow2;
     @FXML
     private Label player0_name, player1_name, player2_name, player3_name;
+    @FXML
+    private Label player0NameLabel, player1NameLabel, player2NameLabel, player3NameLabel;
     @FXML
     private Label player0_scores, player1_scores, player2_scores, player3_scores, player0_shots,  player1_shots,  player2_shots,  player3_shots;
     final private ArrayList<Player> allPlayers = new ArrayList<>(); // Player содержатся в Animation
@@ -66,24 +66,23 @@ public class ServerFrameController implements Observer, FrameController {
         }
     }
     @Override
-    public void AddPlayer(String s) {
+    public void AddPlayer(String playerName) {
         ArrayList<Line> arrowLines = new ArrayList<>(Arrays.asList(player0_arrow1, player1_arrow1, player2_arrow1, player3_arrow1));
         ArrayList<Polygon> arrowHeads = new ArrayList<>(Arrays.asList(player0_arrow2, player1_arrow2, player2_arrow2, player3_arrow2));
         ArrayList<Label> nameLabels = new ArrayList<>(Arrays.asList(player0_name, player1_name, player2_name, player3_name));
+        ArrayList<Label> nameLabels1 = new ArrayList<>(Arrays.asList(player0NameLabel, player1NameLabel, player2NameLabel, player3NameLabel));
         ArrayList<Label> scoresLabels = new ArrayList<>(Arrays.asList(player0_scores, player1_scores, player2_scores, player3_scores));
         ArrayList<Label> shotsLabels = new ArrayList<>(Arrays.asList(player0_shots,  player1_shots,  player2_shots,  player3_shots));
 
-        for(var p : allPlayers) {
-            if (p.GetPlayerName().equals(s)) { // самого себя нужно добавить только один раз
-                return;
-            }
-        }
         int playerNumber = allPlayers.size();
         Arrow a = new Arrow(arrowLines.get(playerNumber), arrowHeads.get(playerNumber));
         a.setVisible(true);
 
-        Player p = new Player(s, a, nameLabels.get(playerNumber), scoresLabels.get(playerNumber), shotsLabels.get(playerNumber));
-        nameLabels.get(playerNumber).setText(s);
+        Player p = new Player(playerName, a, nameLabels.get(playerNumber), scoresLabels.get(playerNumber), shotsLabels.get(playerNumber));
+
+        nameLabels.get(playerNumber).setText(playerName);
+        nameLabels1.get(playerNumber).setText(playerName);
+
         scoresLabels.get(playerNumber).setText("0");
         shotsLabels.get(playerNumber).setText("0");
         allPlayers.add(p);

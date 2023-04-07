@@ -39,21 +39,19 @@ public class Server {
                 while (true) {
                     ++number;
                     Socket cs = null;
-                    if(number < 4) {
-                        try {
-                            cs = ss.accept();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        System.out.println("Client #" + number + " is connected. Port " + cs.getPort());
-                        ClientAtServer c = new ClientAtServer(cs, this);
-                        allClientsHandlers.add(c);
-                        for (var o : allObservers) {
-                            System.out.println("Add observer to Client #" + number);
-                            c.AddObserver(o);
-                        }
-                        new Thread(c).start();
+                    try {
+                        cs = ss.accept();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
+                    System.out.println("Client #" + number + " is connected. Port " + cs.getPort());
+                    ClientAtServer c = new ClientAtServer(cs, this);
+                    allClientsHandlers.add(c);
+                    for (var o : allObservers) {
+                        System.out.println("Add observer to Client #" + number);
+                        c.AddObserver(o);
+                    }
+                    new Thread(c).start();
                 }
             }).start();
         } catch (IOException e) {

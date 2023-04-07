@@ -1,6 +1,5 @@
 package com.app;
 
-import com.server.ServerFrame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,7 +22,4 @@ public class ClientFrame extends Application {
     public static void StartApp() {
         launch();
     }
-    /*public static void main(String args[]) {
-        launch();
-    }*/
 }

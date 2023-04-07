@@ -86,6 +86,7 @@ public class ServerFrameController implements Observer, FrameController {
         scoresLabels.get(playerNumber).setText("0");
         shotsLabels.get(playerNumber).setText("0");
         allPlayers.add(p);
+        System.out.println("allPlayers size = " + allPlayers.size());
     }
     @Override
     public void OnPauseGame(String playerName)

@@ -60,7 +60,6 @@ public class Client {
                 Thread.sleep(10);
             }
             r = gson.fromJson(dis.readUTF(), Response.class);
-            System.out.println("Response: " + r);
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }

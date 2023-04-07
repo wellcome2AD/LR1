@@ -70,6 +70,8 @@ public class ClientAtServer implements Runnable{
                 boolean isNameUnique = !s.FindName(client_name);
                 if(isNameUnique) {
                     s.AddName(client_name);
+                    for(var o : allObservers)
+                        Platform.runLater(() -> o.AddPlayer(client_name));
                 }
                 SendToSocket(new Response(Response.respType.isNameUnique, client_name, isNameUnique));
                 s.Broadcast(new Response(Response.respType.newPlayer, null, client_name));
@@ -80,12 +82,12 @@ public class ClientAtServer implements Runnable{
             case playerIsReady -> {
                 for(var o : allObservers){
                     System.out.println("PlayerIsReady");
-                    Platform.runLater(() ->{ o.OnStartGame(r.getClientName()); });
+                    Platform.runLater(() -> o.OnStartGame(r.getClientName()));
                 }
             }
             case pauseGame -> {
                 for (var o : allObservers)
-                    Platform.runLater(() ->{ o.OnPauseGame(r.getClientName());});
+                    Platform.runLater(() -> o.OnPauseGame(r.getClientName()));
                 s.Broadcast(new Response(Response.respType.pauseGame, null, null));
             }
             case arrowIsShot -> {

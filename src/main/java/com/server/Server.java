@@ -31,27 +31,29 @@ public class Server {
         }
 
         try {
-            ServerSocket ss = new ServerSocket(port, 0, ip);
+            ServerSocket ss = new ServerSocket(port, 2, ip);
             System.out.println("Server started");
 
             new Thread(() -> {
                 int number = 0;
                 while (true) {
-                    ++number;
-                    Socket cs = null;
-                    try {
-                        cs = ss.accept();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    if(number < 4) {
+                        Socket cs = null;
+                        try {
+                            cs = ss.accept();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        ++number;
+                        System.out.println("Client #" + number + " is connected. Port " + cs.getPort());
+                        ClientAtServer c = new ClientAtServer(cs, this);
+                        allClientsHandlers.add(c);
+                        for (var o : allObservers) {
+                            System.out.println("Add observer to Client #" + number);
+                            c.AddObserver(o);
+                        }
+                        new Thread(c).start();
                     }
-                    System.out.println("Client #" + number + " is connected. Port " + cs.getPort());
-                    ClientAtServer c = new ClientAtServer(cs, this);
-                    allClientsHandlers.add(c);
-                    for (var o : allObservers) {
-                        System.out.println("Add observer to Client #" + number);
-                        c.AddObserver(o);
-                    }
-                    new Thread(c).start();
                 }
             }).start();
         } catch (IOException e) {

@@ -2,7 +2,6 @@ package com.app;
 
 import com.client.Client;
 import com.client.Request;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -87,6 +86,12 @@ public class ClientFrameController implements Observer, FrameController{
         ArrayList<Label> nameLabels1 = new ArrayList<>(Arrays.asList(player0NameLabel, player1NameLabel, player2NameLabel, player3NameLabel));
         ArrayList<Label> scoresLabels = new ArrayList<>(Arrays.asList(player0_scores, player1_scores, player2_scores, player3_scores));
         ArrayList<Label> shotsLabels = new ArrayList<>(Arrays.asList(player0_shots,  player1_shots,  player2_shots,  player3_shots));
+
+        for(var p : allPlayers) {
+            if (p.GetPlayerName().equals(playerName)) {
+                return;
+            }
+        }
 
         int playerNumber = allPlayers.size();
         Arrow a = new Arrow(arrowLines.get(playerNumber), arrowHeads.get(playerNumber));

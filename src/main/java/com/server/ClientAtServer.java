@@ -70,8 +70,6 @@ public class ClientAtServer implements Runnable{
                 boolean isNameUnique = !s.FindName(client_name);
                 if(isNameUnique) {
                     s.AddName(client_name);
-                    for (var o : allObservers)
-                        Platform.runLater(() -> o.AddPlayer(client_name));
                 }
                 SendToSocket(new Response(Response.respType.isNameUnique, client_name, isNameUnique));
                 s.Broadcast(new Response(Response.respType.newPlayer, null, client_name));

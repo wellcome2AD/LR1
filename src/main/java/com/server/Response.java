@@ -1,7 +1,7 @@
 package com.server;
 
 public class Response {
-    public enum respType{isNameUnique, newPlayer, allPlayers, bigTargetCords, smallTargetCords, arrowCords, scoresNum, shotsNum, startGame, pauseGame};
+    public enum respType{isNameUnique, newPlayer, allPlayers, bigTargetCords, smallTargetCords, arrowCords, scoresNum, shotsNum, startGame, pauseGame, winGame};
     private respType rType;
     private String clientName;
     private Object data;

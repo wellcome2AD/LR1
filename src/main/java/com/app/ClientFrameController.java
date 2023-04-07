@@ -26,7 +26,7 @@ public class ClientFrameController implements Observer, FrameController{
     @FXML
     private Label player0_name, player1_name, player2_name, player3_name;
     @FXML
-    private Label player0_scores, player1_scores, player2_scores, player3_scores, player0_shots,  player1_shots,  player2_shots,  player3_shots;
+    private Label player0_scores, player1_scores, player2_scores, player3_scores, player0_shots,  player1_shots,  player2_shots,  player3_shots, winLabel;
     @FXML
     public Button shot_button, start_game_button, stop_game_button;
     private Client cl;
@@ -115,9 +115,9 @@ public class ClientFrameController implements Observer, FrameController{
     public void TargetMove(target targetType, double yCord) {
         if(targetType == target.smallTarget)
             small_target.setCenterY(yCord);
-        else
+        else {
             big_target.setCenterY(yCord);
-
+        }
     }
 
     @Override
@@ -132,8 +132,15 @@ public class ClientFrameController implements Observer, FrameController{
         start_game_button.setDisable(false);
         stop_game_button.setDisable(true);
     }
-
     @Override
+    public void OnWinGame(String playerName){
+        winLabel.setText(winLabel.getText() + playerName);
+        winLabel.setVisible(true);
+        start_game_button.setDisable(true);
+        stop_game_button.setDisable(true);
+        shot_button.setDisable(true);
+    }
+
     public void OnShot(String playerName) {
         shot_button.setDisable(true);
     }

@@ -37,7 +37,10 @@ public class ClientAtServer implements Runnable{
     @Override
     public void run() {
         try {
-            InputStream is = cs.getInputStream();
+            InputStream is = null;
+            synchronized (cs) {
+                is = cs.getInputStream();
+            }
             dis = new DataInputStream(is);
             while(true)
             {
@@ -50,13 +53,18 @@ public class ClientAtServer implements Runnable{
     }
     public void SendToSocket(Response r){
         try {
-            dos.writeUTF(gson.toJson(r));
+            synchronized (dos) {
+                dos.writeUTF(gson.toJson(r));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
     private void ReceiveFromClient() throws IOException {
-        String s = dis.readUTF();
+        String s;
+        synchronized (dis) {
+            s = dis.readUTF();
+        }
         Request r = gson.fromJson(s, Request.class);
         System.out.println("Request: " + r);
         HandleRequest(r);

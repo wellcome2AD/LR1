@@ -26,7 +26,7 @@ public class Arrow {
     }
     public void arrowToStart(){
         arrow_line.setStartX(startLinePos.get(0));
-        arrow_line.setEndX(startLinePos.get(0));
+        arrow_line.setEndX(startLinePos.get(1));
         var arrow_head_points = arrow_head.getPoints();
         synchronized (arrow_head_points)
         {

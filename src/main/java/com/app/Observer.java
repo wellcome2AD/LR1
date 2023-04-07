@@ -13,5 +13,6 @@ public interface Observer {
     public void TargetMove(target targetType, double yCord);
     public void OnStartGame(String playerName);
     public void OnPauseGame(String playerName);
+    public void OnWinGame(String playerName);
     public void OnShot(String playerName);
 }

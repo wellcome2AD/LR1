@@ -221,5 +221,10 @@
          </font>
       </Label>
       <Label fx:id="player3_name" layoutX="487.0" layoutY="321.0" text="----------------" />
+      <Label fx:id="winLabel" layoutX="66.0" layoutY="64.0" text="Победил игрок " textAlignment="CENTER" visible="false">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

@@ -40,8 +40,9 @@ public class ServerAnimation implements Runnable {
         speed2 = speed1 * 2;
         arrow.arrowToStart();
         arrowWasShooting.set(false);
-        for (var o : allObservers)
-                o.ArrowIsShot(false);
+        for (var o : allObservers) {
+            o.ArrowIsShot(false);
+        }
     }
     public void stopAnimation(){
         gameIsRunning.set(false);

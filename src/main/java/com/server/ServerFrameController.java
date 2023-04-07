@@ -60,9 +60,10 @@ public class ServerFrameController implements Observer, FrameController {
                 ++i;
             }
         }
-        if(playersReady.size() == allPlayers.size())
+        if(playersReady.size() == allPlayers.size()) {
             s.Broadcast(new Response(startGame, null, null));
-        for (var a : allAnims) a.resetAnimation();
+            for (var a : allAnims) a.resetAnimation();
+        }
     }
     @Override
     public void AddPlayer(String s) {
@@ -97,6 +98,13 @@ public class ServerFrameController implements Observer, FrameController {
             }
         }
         playersReady.remove(player);
+        playersReady.trimToSize();
+        for(var a : allAnims) {
+            a.stopAnimation();
+        }
+    }
+    @Override
+    public void OnWinGame(String playerName) {
         for(var a : allAnims) {
             a.stopAnimation();
         }
@@ -145,7 +153,11 @@ public class ServerFrameController implements Observer, FrameController {
         var old_value = Integer.parseInt(scores_label.getText());
         var new_value = Integer.parseInt(_scores);
         scores_label.setText(String.valueOf(old_value + new_value));
-        s.Broadcast(new Response(Response.respType.scoresNum, p.GetPlayerName(), scores_label.getText()));
+        s.Broadcast(new Response(scoresNum, p.GetPlayerName(), scores_label.getText()));
+
+        if(Integer.parseInt(_scores) >= 10){
+            s.Broadcast(new Response(winGame, null, p.GetPlayerName()));
+        }
     }
     @Override
     public void IncreaseShots(Player p){

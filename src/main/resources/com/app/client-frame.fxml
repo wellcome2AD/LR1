@@ -58,26 +58,26 @@
                <children>
                   <Pane prefHeight="62.0" prefWidth="54.0">
                      <children>
-                        <Polygon fx:id="player0_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Line fx:id="player0_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" />
+                        <Polygon fx:id="player0_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Line fx:id="player0_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" visible="false" />
                      </children>
                   </Pane>
                   <Pane prefHeight="62.0" prefWidth="54.0">
                      <children>
-                        <Polygon fx:id="player1_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Line fx:id="player1_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" />
+                        <Polygon fx:id="player1_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Line fx:id="player1_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" visible="false" />
                      </children>
                   </Pane>
                   <Pane prefHeight="62.0" prefWidth="54.0">
                      <children>
-                        <Polygon fx:id="player2_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Line fx:id="player2_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" />
+                        <Polygon fx:id="player2_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Line fx:id="player2_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" visible="false" />
                      </children>
                   </Pane>
                   <Pane prefHeight="62.0" prefWidth="54.0">
                      <children>
-                        <Polygon fx:id="player3_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Line fx:id="player3_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" />
+                        <Polygon fx:id="player3_arrow2" points="46.0, 43.0, 54.0, 37.0, 46.0, 29.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Line fx:id="player3_arrow1" endX="50.0" endY="36.0" startX="11.0" startY="36.0" visible="false" />
                      </children>
                   </Pane>
                </children>
@@ -154,25 +154,25 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player0_scores" layoutX="486.0" layoutY="48.0" text="0" />
+      <Label fx:id="player0_scores" layoutX="486.0" layoutY="48.0" />
       <Label layoutX="483.0" layoutY="64.0" text="Выстрелов:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player0_shots" layoutX="486.0" layoutY="82.0" text="0" />
+      <Label fx:id="player0_shots" layoutX="486.0" layoutY="82.0" />
       <Label layoutX="485.0" layoutY="128.0" text="Счёт:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player1_shots" layoutX="486.0" layoutY="179.0" text="0" />
+      <Label fx:id="player1_shots" layoutX="486.0" layoutY="179.0" />
       <Label layoutX="484.0" layoutY="163.0" text="Выстрелов:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player1_scores" layoutX="486.0" layoutY="146.0" text="0" />
+      <Label fx:id="player1_scores" layoutX="486.0" layoutY="146.0" />
       <Label layoutX="484.0" layoutY="-4.0" prefHeight="21.0" prefWidth="84.0" text="Игрок:">
          <font>
             <Font name="System Bold" size="15.0" />
@@ -190,13 +190,13 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player2_shots" layoutX="486.0" layoutY="284.0" text="0" />
+      <Label fx:id="player2_shots" layoutX="486.0" layoutY="284.0" />
       <Label layoutX="484.0" layoutY="268.0" text="Выстрелов:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player2_scores" layoutX="486.0" layoutY="251.0" text="0" />
+      <Label fx:id="player2_scores" layoutX="486.0" layoutY="251.0" />
       <Label layoutX="484.0" layoutY="202.0" prefHeight="21.0" prefWidth="84.0" text="Игрок:">
          <font>
             <Font name="System Bold" size="15.0" />
@@ -208,13 +208,13 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player3_shots" layoutX="486.0" layoutY="386.0" text="0" />
+      <Label fx:id="player3_shots" layoutX="486.0" layoutY="386.0" />
       <Label layoutX="484.0" layoutY="370.0" text="Выстрелов:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="player3_scores" layoutX="486.0" layoutY="353.0" text="0" />
+      <Label fx:id="player3_scores" layoutX="486.0" layoutY="353.0" />
       <Label layoutX="484.0" layoutY="304.0" prefHeight="21.0" prefWidth="84.0" text="Игрок:">
          <font>
             <Font name="System Bold" size="15.0" />

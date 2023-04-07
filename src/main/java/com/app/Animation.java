@@ -83,17 +83,17 @@ public class Animation implements Runnable{
                     {
                         Platform.runLater(()-> {
                             for (var o : allObservers)
-                                o.ScoresChanged(player.GetUserName(), 5);});
+                                o.ScoresChanged(player.GetPlayerName(), 5);});
                     }
                     else if(arrInterSmallTarget)
                     {
-                        Platform.runLater(()-> {for (var o : allObservers) o.ScoresChanged(player.GetUserName(), 10);});
+                        Platform.runLater(()-> {for (var o : allObservers) o.ScoresChanged(player.GetPlayerName(), 10);});
                     }
                     arrow.arrowToStart();
                     arrowWasShooting.set(false);
                     Platform.runLater(()-> {
                         for (var o : allObservers) {
-                            o.ShotsChanged(player.GetUserName());
+                            o.ShotsChanged(player.GetPlayerName());
                             o.ArrowIsShot(false);
                         }
                     });

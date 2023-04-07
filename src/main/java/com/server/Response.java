@@ -15,6 +15,6 @@ public class Response {
     public String getClientName() { return clientName; }
     @Override
     public String toString(){
-        return "Response{" + "rType=" + rType + ", clientName= " + clientName + ", data=" + data + '}';
+        return "Response{" + "rType=" + rType + ", clientName=" + clientName + ", data=" + data + '}';
     }
 }

@@ -9,13 +9,14 @@ import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerAnimation implements Runnable {
     final private Circle big_target, small_target;
     private int speed1, speed2;
-    private Player player;
-    private Arrow arrow = null;
+    final private Player player;
+    final private Arrow arrow;
     final private AtomicBoolean gameIsRunning, arrowWasShooting;
     final private ArrayList<Observer> allObservers = new ArrayList<>();
 
@@ -25,6 +26,7 @@ public class ServerAnimation implements Runnable {
         speed1 = 2;
         speed2 = speed1 * 2;
         player = p;
+        arrow = p.GetArrow();
         gameIsRunning = new AtomicBoolean(false);
         arrowWasShooting = new AtomicBoolean(false);
     }
@@ -38,10 +40,8 @@ public class ServerAnimation implements Runnable {
         speed2 = speed1 * 2;
         arrow.arrowToStart();
         arrowWasShooting.set(false);
-        Platform.runLater(() ->{
-            for (var o : allObservers)
+        for (var o : allObservers)
                 o.ArrowIsShot(false);
-        });
     }
     public void stopAnimation(){
         gameIsRunning.set(false);
@@ -65,7 +65,8 @@ public class ServerAnimation implements Runnable {
     {
         arrow.moveArrow();
         for(var o : allObservers) {
-            o.ArrowMove(player.GetUserName(), arrow.GetHeadCords(), arrow.GetLineCords());
+            var lineCords = new ArrayList<>(Arrays.asList(arrow.GetLineCords().getKey(), arrow.GetLineCords().getValue()));
+            o.ArrowMove(player.GetPlayerName(), arrow.GetHeadCords(), lineCords);
         }
     }
     static private boolean doesArrowIntersectCircle(Pair<Double, Double> arrow_head_cords,
@@ -97,21 +98,21 @@ public class ServerAnimation implements Runnable {
                     if(arrInterBigTarget)
                     {
                         Platform.runLater(()-> {
-                            for (var o : allObservers) o.ScoresChanged(player.GetUserName(), 5);
+                            for (var o : allObservers) o.ScoresChanged(player.GetPlayerName(), 5);
                         });
                     }
                     else if(arrInterSmallTarget)
                     {
                         Platform.runLater(()-> {
                             for (var o : allObservers)
-                                o.ScoresChanged(player.GetUserName(), 10);
+                                o.ScoresChanged(player.GetPlayerName(), 10);
                         });
                     }
                     arrow.arrowToStart();
                     arrowWasShooting.set(false);
                     Platform.runLater(()-> {
                         for (var o : allObservers) {
-                            o.ShotsChanged(player.GetUserName());
+                            o.ShotsChanged(player.GetPlayerName());
                             o.ArrowIsShot(false);
                         }
                     });

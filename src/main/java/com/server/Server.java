@@ -1,7 +1,7 @@
 package com.server;
 
+import com.app.FrameController;
 import com.app.Observer;
-import com.client.Client;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -9,24 +9,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Server {
-    int port = 3124;
-    InetAddress ip = null;
-    ArrayList<ClientAtServer> allClientsHandlers = new ArrayList<>();
-    ArrayList<String> allNames = new ArrayList<>();
+    final private ArrayList<ClientAtServer> allClientsHandlers = new ArrayList<>();
+    final private ArrayList<String> allNames = new ArrayList<>();
     final private ArrayList<Observer> allObservers = new ArrayList<>();
+    final private FrameController fc;
+    public Server(FrameController _fc){
+        fc = _fc;
+    }
     public void AddObserver(Observer o) {
         allObservers.add(o);
-        for(var clh : allClientsHandlers){
-            clh.AddObserver(o);
-        }
     }
     void StartServer(){
-        int number = 0;
-
+        int port = 3124;
+        InetAddress ip = null;
         try {
             ip = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
@@ -37,14 +34,26 @@ public class Server {
             ServerSocket ss = new ServerSocket(port, 0, ip);
             System.out.println("Server started");
 
-            while(true){
-                ++number;
-                Socket cs =  ss.accept();
-                System.out.println("Client #" + number + " is connected. Port " + cs.getPort());
-                ClientAtServer c = new ClientAtServer(cs, this);
-                allClientsHandlers.add(c);
-                new Thread(c).start();
-            }
+            new Thread(() -> {
+                int number = 0;
+                while (true) {
+                    ++number;
+                    Socket cs = null;
+                    try {
+                        cs = ss.accept();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Client #" + number + " is connected. Port " + cs.getPort());
+                    ClientAtServer c = new ClientAtServer(cs, this);
+                    allClientsHandlers.add(c);
+                    for (var o : allObservers) {
+                        System.out.println("Add observer to Client #" + number);
+                        c.AddObserver(o);
+                    }
+                    new Thread(c).start();
+                }
+            }).start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -55,12 +64,13 @@ public class Server {
     public boolean FindName(String name){
         return allNames.contains(name);
     }
+    public ArrayList<String> GetAllNames() { return allNames; }
     public void Broadcast(Response r){
         for(var cl : allClientsHandlers){
             cl.SendToSocket(r);
         }
     }
     public static void main(String[] args){
-        new Server().StartServer();
+        ServerFrame.StartApp();
     }
 }

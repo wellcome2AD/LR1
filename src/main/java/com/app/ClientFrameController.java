@@ -12,6 +12,7 @@ import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.client.Request.message.isNameUnique;
 
@@ -36,7 +37,7 @@ public class ClientFrameController implements Observer, FrameController{
         dialog.getResult().ifPresent(name -> cl = new Client(name, this));
         cl.ConnectClient();
         cl.AddObserver(this);
-        cl.SendToServer(new Request(isNameUnique, null, cl.getUserName()));
+        cl.SendToServer(new Request(isNameUnique, null, cl.GetPlayerName()));
         cl.HandleResponse(cl.ReceiveFromServer());
         new Thread(()-> {
                 while(true) {
@@ -44,34 +45,31 @@ public class ClientFrameController implements Observer, FrameController{
                 }
             }
         ).start();
+        stop_game_button.setDisable(true);
     }
     @FXML
     protected void onStartGameButtonClick() {
-        cl.SendToServer(new Request(Request.message.playerIsReady, cl.getUserName(), null));
+        cl.SendToServer(new Request(Request.message.playerIsReady, cl.GetPlayerName(), null));
         start_game_button.setDisable(true);
-        shot_button.setDisable(false);
+        stop_game_button.setDisable(false);
     }
     @FXML
     protected void onStopGameButtonClick()
     {
-        cl.SendToServer(new Request(Request.message.pauseGame, cl.getUserName(), null));
+        cl.SendToServer(new Request(Request.message.pauseGame, cl.GetPlayerName(), null));
         start_game_button.setDisable(false);
+        stop_game_button.setDisable(true);
         shot_button.setDisable(true);
     }
     @FXML
     protected void OnShotButtonClick() {
-        cl.SendToServer(new Request(Request.message.arrowIsShot, cl.getUserName(), null));
-        OnPauseGame();
+        cl.SendToServer(new Request(Request.message.arrowIsShot, cl.GetPlayerName(), null));
     }
     @Override
-    public void IncreaseScores(int _scores) { IncreaseScores(_scores,  allPlayers.get(0)); }
-    @Override
-    public void IncreaseScores(int _scores, Player p){
+    public void IncreaseScores(int _scores, Player p) {
         var scores_label = p.GetScoresLabel();
         scores_label.setText(String.valueOf(Integer.parseInt(scores_label.getText()) + _scores));
     }
-    @Override
-    public void IncreaseShots(){ IncreaseShots(allPlayers.get(0));}
     @Override
     public void IncreaseShots(Player p){
         var shots_label = p.GetShotsLabel();
@@ -79,48 +77,38 @@ public class ClientFrameController implements Observer, FrameController{
     }
     @Override
     public void AddPlayer(String s) {
+        ArrayList<Line> arrowLines = new ArrayList<>(Arrays.asList(player0_arrow1, player1_arrow1, player2_arrow1, player3_arrow1));
+        ArrayList<Polygon> arrowHeads = new ArrayList<>(Arrays.asList(player0_arrow2, player1_arrow2, player2_arrow2, player3_arrow2));
+        ArrayList<Label> nameLabels = new ArrayList<>(Arrays.asList(player0_name, player1_name, player2_name, player3_name));
+        ArrayList<Label> scoresLabels = new ArrayList<>(Arrays.asList(player0_scores, player1_scores, player2_scores, player3_scores));
+        ArrayList<Label> shotsLabels = new ArrayList<>(Arrays.asList(player0_shots,  player1_shots,  player2_shots,  player3_shots));
+
         for(var p : allPlayers) {
-            if (p.GetUserName().equals(s)) { // самого себя нужно добавить только один раз
+            if (p.GetPlayerName().equals(s)) { // самого себя нужно добавить только один раз
                 return;
             }
         }
-        Arrow a = null;
-        Player p = null;
-        switch(allPlayers.size()) {
-            case 0 -> {
-                a = new Arrow(player0_arrow1, player0_arrow2);
-                p = new Player(s, a, player0_name, player0_scores, player0_shots);
-                Platform.runLater(() ->player0_name.setText(s));
-            }
-            case 1 -> {
-                a = new Arrow(player1_arrow1, player1_arrow2);
-                p = new Player(s, a, player1_name, player1_scores, player1_shots);
-                Platform.runLater(() ->player1_name.setText(s));
-            }
-            case 2 -> {
-                a = new Arrow(player2_arrow1, player2_arrow2);
-                p = new Player(s, a, player2_name, player2_scores, player2_shots);
-                Platform.runLater(() ->player2_name.setText(s));
-            }
-            case 3 -> {
-                a = new Arrow(player3_arrow1, player3_arrow2);
-                p = new Player(s, a, player3_name, player3_scores, player3_shots);
-                Platform.runLater(() ->player3_name.setText(s));
-            }
-        }
+        int playerNumber = allPlayers.size();
+        Arrow a = new Arrow(arrowLines.get(playerNumber), arrowHeads.get(playerNumber));
+        a.setVisible(true);
+
+        Player p = new Player(s, a, nameLabels.get(playerNumber), scoresLabels.get(playerNumber), shotsLabels.get(playerNumber));
+        nameLabels.get(playerNumber).setText(s);
+        scoresLabels.get(playerNumber).setText("0");
+        shotsLabels.get(playerNumber).setText("0");
         allPlayers.add(p);
     }
 
     @Override
-    public void ArrowMove(String user_name, ArrayList<Double> headCords, Pair<Double, Double> lineCords) {
+    public void ArrowMove(String user_name, ArrayList<Double> headCords,  ArrayList<Double> lineCords) {
         Player player = null;
         for(var p : allPlayers) {
-            if (p.GetUserName().equals(user_name)) {
+            if (p.GetPlayerName().equals(user_name)) {
                 player = p;
             }
         }
         player.GetArrow().SetHeadCords(headCords);
-        player.GetArrow().SetLineCoords(lineCords);
+        player.GetArrow().SetLineCoords(new Pair<>(lineCords.get(0), lineCords.get(1)));
     }
 
     @Override
@@ -133,12 +121,20 @@ public class ClientFrameController implements Observer, FrameController{
     }
 
     @Override
-    public void OnPauseGame() {
-        shot_button.setDisable(true);
+    public void OnStartGame(String playerName) {
+        start_game_button.setDisable(true);
+        stop_game_button.setDisable(false);
+        shot_button.setDisable(false);
     }
 
     @Override
-    public void OnShot(String userName) {
+    public void OnPauseGame(String playerName) {
+        start_game_button.setDisable(false);
+        stop_game_button.setDisable(true);
+    }
+
+    @Override
+    public void OnShot(String playerName) {
         shot_button.setDisable(true);
     }
 
@@ -146,7 +142,7 @@ public class ClientFrameController implements Observer, FrameController{
     public void ScoresChanged(String userName, int scores) {
         Player player = null;
         for(var p : allPlayers) {
-            if (p.GetUserName().equals(userName)) {
+            if (p.GetPlayerName().equals(userName)) {
                 player = p;
                 break;
             }
@@ -155,10 +151,10 @@ public class ClientFrameController implements Observer, FrameController{
     }
 
     @Override
-    public void ShotsChanged(String userName) {
+    public void ShotsChanged(String playerName) {
         Player player = null;
         for(var p : allPlayers) {
-            if (p.GetUserName().equals(userName)) {
+            if (p.GetPlayerName().equals(playerName)) {
                 player = p;
                 break;
             }

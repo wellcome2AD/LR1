@@ -41,10 +41,7 @@ public class ClientAtServer implements Runnable{
             dis = new DataInputStream(is);
             while(true)
             {
-                String s = dis.readUTF();
-                Request r = gson.fromJson(s, Request.class);
-                System.out.println("Request: " + r);
-                HandleRequest(r);
+                ReceiveFromClient();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,6 +55,12 @@ public class ClientAtServer implements Runnable{
             throw new RuntimeException(e);
         }
     }
+    private void ReceiveFromClient() throws IOException {
+        String s = dis.readUTF();
+        Request r = gson.fromJson(s, Request.class);
+        System.out.println("Request: " + r);
+        HandleRequest(r);
+    }
     private void HandleRequest(Request r){
         var request_type = r.getMessage();
         switch (request_type){
@@ -67,24 +70,30 @@ public class ClientAtServer implements Runnable{
                 boolean isNameUnique = !s.FindName(client_name);
                 if(isNameUnique) {
                     s.AddName(client_name);
+                    for (var o : allObservers)
+                        Platform.runLater(() -> o.AddPlayer(client_name));
                 }
                 SendToSocket(new Response(Response.respType.isNameUnique, client_name, isNameUnique));
                 s.Broadcast(new Response(Response.respType.newPlayer, null, client_name));
             }
             case getAllPlayers -> {
-                SendToSocket(new Response(Response.respType.allPlayers, r.getClientName(), s.allNames));
+                SendToSocket(new Response(Response.respType.allPlayers, r.getClientName(), s.GetAllNames()));
             }
             case playerIsReady -> {
-                break;
+                for(var o : allObservers){
+                    System.out.println("PlayerIsReady");
+                    Platform.runLater(() ->{ o.OnStartGame(r.getClientName()); });
+                }
             }
             case pauseGame -> {
                 for (var o : allObservers)
-                    Platform.runLater(() ->{ o.OnPauseGame();});
+                    Platform.runLater(() ->{ o.OnPauseGame(r.getClientName());});
                 s.Broadcast(new Response(Response.respType.pauseGame, null, null));
             }
             case arrowIsShot -> {
-                for (var o : allObservers)
-                    Platform.runLater(() ->{ o.OnShot(r.getClientName());});
+                for (var o : allObservers) {
+                    Platform.runLater(() -> { o.OnShot(r.getClientName()); });
+                }
             }
         }
     }

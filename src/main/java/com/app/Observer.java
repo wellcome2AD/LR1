@@ -9,8 +9,9 @@ public interface Observer {
     public void ShotsChanged(String userName);
     public void ArrowIsShot(boolean value);
     public void AddPlayer(String user_name);
-    public void ArrowMove(String user_name, ArrayList<Double> headCords, Pair<Double, Double> lineCords);
+    public void ArrowMove(String user_name, ArrayList<Double> headCords,  ArrayList<Double>  lineCords);
     public void TargetMove(target targetType, double yCord);
-    public void OnPauseGame();
-    public void OnShot(String userName);
+    public void OnStartGame(String playerName);
+    public void OnPauseGame(String playerName);
+    public void OnShot(String playerName);
 }

@@ -65,8 +65,7 @@ public class ServerAnimation implements Runnable {
     {
         arrow.moveArrow();
         for(var o : allObservers) {
-            var lineCords = new ArrayList<>(Arrays.asList(arrow.GetLineCords().getKey(), arrow.GetLineCords().getValue()));
-            o.ArrowMove(player.GetPlayerName(), arrow.GetHeadCords(), lineCords);
+            o.ArrowMove(player.GetPlayerName(), arrow.GetHeadCords(), arrow.GetLineCords());
         }
     }
     static private boolean doesArrowIntersectCircle(Pair<Double, Double> arrow_head_cords,
@@ -98,17 +97,20 @@ public class ServerAnimation implements Runnable {
                     if(arrInterBigTarget)
                     {
                         Platform.runLater(()-> {
-                            for (var o : allObservers) o.ScoresChanged(player.GetPlayerName(), 5);
+                            for (var o : allObservers) o.ScoresChanged(player.GetPlayerName(), "5");
                         });
                     }
                     else if(arrInterSmallTarget)
                     {
                         Platform.runLater(()-> {
                             for (var o : allObservers)
-                                o.ScoresChanged(player.GetPlayerName(), 10);
+                                o.ScoresChanged(player.GetPlayerName(), "10");
                         });
                     }
                     arrow.arrowToStart();
+                    for(var o : allObservers){
+                        o.ArrowMove(player.GetPlayerName(), arrow.GetHeadCords(), arrow.GetLineCords());
+                    }
                     arrowWasShooting.set(false);
                     Platform.runLater(()-> {
                         for (var o : allObservers) {

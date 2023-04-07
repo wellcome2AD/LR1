@@ -5,7 +5,7 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public interface Observer {
-    public void ScoresChanged(String userName, int scores);
+    public void ScoresChanged(String userName, String scores);
     public void ShotsChanged(String userName);
     public void ArrowIsShot(boolean value);
     public void AddPlayer(String user_name);

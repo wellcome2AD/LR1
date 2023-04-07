@@ -115,7 +115,7 @@ public class ServerFrameController implements Observer, FrameController {
     }
 
     @Override
-    public void ScoresChanged(String userName, int scores) {
+    public void ScoresChanged(String userName, String scores) {
         Player player = null;
         for(var p : allPlayers) {
             if (p.GetPlayerName().equals(userName)) {
@@ -123,7 +123,7 @@ public class ServerFrameController implements Observer, FrameController {
                 break;
             }
         }
-        IncreaseScores(scores, player);
+        SetScores(scores, player);
     }
 
     @Override
@@ -140,9 +140,11 @@ public class ServerFrameController implements Observer, FrameController {
     @Override
     public void ArrowIsShot(boolean value) {} // отсутствует реализация для серверного контроллера
     @Override
-    public void IncreaseScores(int _scores, Player p){
+    public void SetScores(String _scores, Player p){
         var scores_label = p.GetScoresLabel();
-        scores_label.setText(String.valueOf(Integer.parseInt(scores_label.getText()) + _scores));
+        var old_value = Integer.parseInt(scores_label.getText());
+        var new_value = Integer.parseInt(_scores);
+        scores_label.setText(String.valueOf(old_value + new_value));
         s.Broadcast(new Response(Response.respType.scoresNum, p.GetPlayerName(), scores_label.getText()));
     }
     @Override

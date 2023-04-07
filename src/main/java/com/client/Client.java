@@ -136,7 +136,7 @@ public class Client {
             }
             case scoresNum -> {
                 for (var o : allObservers) {
-                    Platform.runLater(() -> o.ScoresChanged(r.getClientName(), (Integer) r.getData()));
+                    Platform.runLater(() -> o.ScoresChanged(r.getClientName(), (String) r.getData()));
                 }
             }
             case shotsNum -> {

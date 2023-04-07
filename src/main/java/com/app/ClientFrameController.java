@@ -66,9 +66,9 @@ public class ClientFrameController implements Observer, FrameController{
         cl.SendToServer(new Request(Request.message.arrowIsShot, cl.GetPlayerName(), null));
     }
     @Override
-    public void IncreaseScores(int _scores, Player p) {
+    public void SetScores(String _scores, Player p) {
         var scores_label = p.GetScoresLabel();
-        scores_label.setText(String.valueOf(Integer.parseInt(scores_label.getText()) + _scores));
+        scores_label.setText(_scores);
     }
     @Override
     public void IncreaseShots(Player p){
@@ -108,7 +108,7 @@ public class ClientFrameController implements Observer, FrameController{
             }
         }
         player.GetArrow().SetHeadCords(headCords);
-        player.GetArrow().SetLineCoords(new Pair<>(lineCords.get(0), lineCords.get(1)));
+        player.GetArrow().SetLineCords(new Pair<>(lineCords.get(0), lineCords.get(1)));
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ClientFrameController implements Observer, FrameController{
     }
 
     @Override
-    public void ScoresChanged(String userName, int scores) {
+    public void ScoresChanged(String userName, String scores) {
         Player player = null;
         for(var p : allPlayers) {
             if (p.GetPlayerName().equals(userName)) {
@@ -147,7 +147,7 @@ public class ClientFrameController implements Observer, FrameController{
                 break;
             }
         }
-        IncreaseScores(scores, player);
+        SetScores(scores, player);
     }
 
     @Override

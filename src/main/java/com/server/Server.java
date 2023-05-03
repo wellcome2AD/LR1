@@ -51,7 +51,6 @@ public class Server {
                         ClientAtServer c = new ClientAtServer(cs, this);
                         allClientsHandlers.add(c);
                         for (var o : allObservers) {
-                            System.out.println("Add observer to Client #" + number);
                             c.AddObserver(o);
                         }
                         new Thread(c).start();

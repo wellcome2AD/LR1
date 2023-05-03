@@ -149,6 +149,11 @@ public class ClientFrameController implements Observer, FrameController {
         start_game_button.setDisable(true);
         stop_game_button.setDisable(false);
         shot_button.setDisable(false);
+        winLabel.setVisible(false);
+        for(var player : allPlayers) {
+            player.GetScoresLabel().setText("0");
+            player.GetShotsLabel().setText("0");
+        }
     }
 
     @Override
@@ -158,9 +163,9 @@ public class ClientFrameController implements Observer, FrameController {
     }
     @Override
     public void OnWinGame(String playerName){
-        winLabel.setText(winLabel.getText() + playerName);
+        winLabel.setText("Победил игрок " + playerName);
         winLabel.setVisible(true);
-        start_game_button.setDisable(true);
+        start_game_button.setDisable(false);
         stop_game_button.setDisable(true);
         shot_button.setDisable(true);
     }

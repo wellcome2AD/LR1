@@ -9,7 +9,6 @@ import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerAnimation implements Runnable {
@@ -36,12 +35,14 @@ public class ServerAnimation implements Runnable {
     }
     public void resetAnimation(){
         gameIsRunning.set(true);
-        speed1 = 2;
-        speed2 = speed1 * 2;
         arrow.arrowToStart();
         arrowWasShooting.set(false);
-        for (var o : allObservers) {
-            o.ArrowIsShot(false);
+        big_target.setCenterY(0);
+        small_target.setCenterY(0);
+        for(var o : allObservers) {
+            o.TargetMove(target.bigTarget, big_target.getCenterY());
+            o.TargetMove(target.smallTarget, big_target.getCenterY());
+            o.ArrowMove(player.GetPlayerName(), arrow.GetHeadCords(), arrow.GetLineCords());
         }
     }
     public void stopAnimation(){

@@ -47,11 +47,7 @@ public class ServerFrameController implements Observer, FrameController {
         if(!playersReady.contains(player)) {
             playersReady.add(player);
         }
-        System.out.println(playersReady.size());
-        System.out.println(allPlayers.size());
-        System.out.println(allAnims.size());
         if(playersReady.size() == allPlayers.size() && allAnims.size() == 0) {
-            System.out.println("This code is not executed");
             int i = 0;
             for (var p : allPlayers) {
                 allAnims.add(new ServerAnimation(big_target, small_target, p));
@@ -87,7 +83,6 @@ public class ServerFrameController implements Observer, FrameController {
         scoresLabels.get(playerNumber).setText("0");
         shotsLabels.get(playerNumber).setText("0");
         allPlayers.add(p);
-        System.out.println("allPlayers size = " + allPlayers.size());
     }
     @Override
     public void OnPauseGame(String playerName)
@@ -107,8 +102,14 @@ public class ServerFrameController implements Observer, FrameController {
     @Override
     public void OnWinGame(String playerName) {
         for(var a : allAnims) {
+            a.resetAnimation();
             a.stopAnimation();
         }
+        for(var p : allPlayers){
+            p.GetScoresLabel().setText("0");
+            p.GetShotsLabel().setText("0");
+        }
+        playersReady.clear();
     }
 
     @Override
@@ -160,12 +161,18 @@ public class ServerFrameController implements Observer, FrameController {
         scores_label.setText(String.valueOf(new_value));
         s.Broadcast(new Response(scoresNum, p.GetPlayerName(), scores_label.getText()));
 
-        if(new_value >= 5){
+        if(new_value >= 10){
             var winnerName = p.GetPlayerName();
             s.Broadcast(new Response(winGame, null, winnerName));
             var player = s.player_service.findPlayer(winnerName);
-            player.SetWinCount(player.GetWinCount() + 1);
-            s.player_service.updatePlayer(player);
+            if(player == null){
+                player = new com.database.Player(winnerName, 1);
+                s.player_service.savePlayer(player);
+            }
+            else {
+                player.SetWinCount(player.GetWinCount() + 1);
+                s.player_service.updatePlayer(player);
+            }
             OnWinGame(null);
         }
     }

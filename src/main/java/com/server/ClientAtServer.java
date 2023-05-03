@@ -69,15 +69,12 @@ public class ClientAtServer implements Runnable{
         var request_type = r.getMessage();
         switch (request_type){
             case isNameUnique -> {
-                System.out.println("HandleRequest: isNameUnique");
                 var client_name = (String)r.getData();
                 boolean isNameUnique = !s.FindName(client_name);
                 if(isNameUnique) {
                     s.AddName(client_name);
                     for(var o : allObservers)
                         Platform.runLater(() -> o.AddPlayer(client_name));
-                    System.out.println("Client_name = " + client_name);
-                    s.player_service.savePlayer(new Player(client_name, 0));
                 }
                 SendToSocket(new Response(Response.respType.isNameUnique, client_name, isNameUnique));
                 s.Broadcast(new Response(Response.respType.newPlayer, null, client_name));
@@ -87,7 +84,6 @@ public class ClientAtServer implements Runnable{
             }
             case playerIsReady -> {
                 for(var o : allObservers){
-                    System.out.println("PlayerIsReady");
                     Platform.runLater(() -> o.OnStartGame(r.getClientName()));
                 }
             }
@@ -103,10 +99,9 @@ public class ClientAtServer implements Runnable{
             }
             case getRecords -> {
                 var list = s.player_service.findAllPlayers();
-                for (var element : list)
-                {
-                    System.out.println(element);
-                }
+                list.sort((Player p1, Player p2)->{
+                    return p1.GetWinCount() < p2.GetWinCount() ? -1 : p1.GetWinCount() == p2.GetWinCount() ? 0 : 1;
+                });
                 SendToSocket(new Response(Response.respType.records, r.getClientName(), list));
             }
         }

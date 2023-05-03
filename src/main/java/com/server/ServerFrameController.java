@@ -10,6 +10,7 @@ import javafx.scene.shape.Polygon;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.server.Response.respType.*;
 
@@ -28,13 +29,16 @@ public class ServerFrameController implements Observer, FrameController {
     private Label player0_scores, player1_scores, player2_scores, player3_scores, player0_shots,  player1_shots,  player2_shots,  player3_shots;
     final private ArrayList<Player> allPlayers = new ArrayList<>(); // Player содержатся в Animation
     final private ArrayList<Player> playersReady = new ArrayList<>();
-    final private ArrayList<ServerAnimation> allAnims = new ArrayList<>();
+    final private ArrayList<ArrowAnimation> allAnims = new ArrayList<>();
+    private static AtomicBoolean isTargetsAnimationStarted = new AtomicBoolean(false);
+    private TargetsAnimation target_anim;
     private Server s;
     @FXML
     protected void initialize(){
         s = new Server(this);
         s.AddObserver(this);
         s.StartServer();
+        target_anim  = new TargetsAnimation(big_target, small_target);
     }
     public void OnStartGame(String playerName) {
         Player player = null;
@@ -50,7 +54,7 @@ public class ServerFrameController implements Observer, FrameController {
         if(playersReady.size() == allPlayers.size() && allAnims.size() == 0) {
             int i = 0;
             for (var p : allPlayers) {
-                allAnims.add(new ServerAnimation(big_target, small_target, p));
+                allAnims.add(new ArrowAnimation(p, target_anim));
                 allAnims.get(i).AddObserver(this);
                 allAnims.get(i).resetAnimation();
                 new Thread(allAnims.get(i)).start();
@@ -59,7 +63,13 @@ public class ServerFrameController implements Observer, FrameController {
         }
         if(playersReady.size() == allPlayers.size()) {
             s.Broadcast(new Response(startGame, null, null));
+            if(!isTargetsAnimationStarted.get()){
+                new Thread(target_anim).start();
+                target_anim.AddObserver(this);
+                isTargetsAnimationStarted.set(true);
+            }
             for (var a : allAnims) a.resetAnimation();
+            target_anim.continueAnimation();
         }
     }
     @Override
@@ -95,9 +105,8 @@ public class ServerFrameController implements Observer, FrameController {
         }
         playersReady.remove(player);
         playersReady.trimToSize();
-        for(var a : allAnims) {
-            a.stopAnimation();
-        }
+        for(var a : allAnims) a.stopAnimation();
+        target_anim.stopAnimation();
     }
     @Override
     public void OnWinGame(String playerName) {
@@ -105,6 +114,8 @@ public class ServerFrameController implements Observer, FrameController {
             a.resetAnimation();
             a.stopAnimation();
         }
+        target_anim.resetAnimation();
+
         for(var p : allPlayers){
             p.GetScoresLabel().setText("0");
             p.GetShotsLabel().setText("0");
@@ -117,7 +128,7 @@ public class ServerFrameController implements Observer, FrameController {
 
     @Override
     public void OnShot(String userName){
-        ServerAnimation anim = null;
+        ArrowAnimation anim = null;
         for(var a : allAnims) {
             if (a.GetPlayer().GetPlayerName().equals(userName)) {
                 System.out.println(a.GetPlayer().GetPlayerName() + " made a shot");

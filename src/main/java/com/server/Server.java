@@ -2,6 +2,7 @@ package com.server;
 
 import com.app.FrameController;
 import com.app.Observer;
+import com.database.HibernateSessionFactoryUtil;
 import com.database.PlayerService;
 
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class Server {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        HibernateSessionFactoryUtil.getSessionFactory();
     }
     public void AddName(String s){
         allNames.add(s);

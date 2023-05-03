@@ -1,15 +1,20 @@
 package com.client;
 
 import com.app.*;
+import com.database.Player;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.server.Response;
 import javafx.application.Platform;
+import javafx.util.Pair;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import static com.client.Request.message.isNameUnique;
 
@@ -31,7 +36,7 @@ public class Client {
     public void ConnectClient(){
         try {
             InetAddress ip = InetAddress.getLocalHost();
-            int port = 3124;
+            int port = 3125;
             socketAtClient = new Socket(ip, port);
             System.out.println("Client connected. Port " + socketAtClient.getPort());
 
@@ -134,6 +139,15 @@ public class Client {
             case winGame -> {
                 for (var o : allObservers) {
                     Platform.runLater(() -> o.OnWinGame((String)r.getData()));
+                }
+            }
+            case records->{
+                var res = new ArrayList<Player>();
+                for(var element : (List<Map<String, Object>>)r.getData()){
+                    res.add(new Player((String)element.get("player_name"), (int)(double)((Double)element.get("win_count")) ));
+                }
+                for (var o : allObservers) {
+                    Platform.runLater(() -> o.OnRecords(res));
                 }
             }
             default -> throw new IllegalStateException("Unexpected value: " + response_type);

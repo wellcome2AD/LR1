@@ -1,21 +1,28 @@
-package com.app;
+package com.client;
 
+import com.app.*;
+import com.database.Player;
 import com.client.Client;
 import com.client.Request;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.client.Request.message.isNameUnique;
 
-public class ClientFrameController implements Observer, FrameController{
+public class ClientFrameController implements Observer, FrameController {
     @FXML
     private Circle big_target, small_target;
     @FXML
@@ -33,7 +40,7 @@ public class ClientFrameController implements Observer, FrameController{
     @FXML
     public Button shot_button, start_game_button, stop_game_button;
     private Client cl;
-    private ArrayList<Player> allPlayers = new ArrayList<>();
+    private ArrayList<com.app.Player> allPlayers = new ArrayList<>();
     @FXML
     protected void initialize(){
         MyDialog dialog = new MyDialog(null);
@@ -69,13 +76,17 @@ public class ClientFrameController implements Observer, FrameController{
         shot_button.setDisable(true);
         cl.SendToServer(new Request(Request.message.arrowIsShot, cl.GetPlayerName(), null));
     }
+    @FXML
+    protected void OnRecordButtonClicked(){
+        cl.SendToServer(new Request(Request.message.getRecords, cl.GetPlayerName(), null));
+    }
     @Override
-    public void SetScores(String _scores, Player p) {
+    public void SetScores(String _scores, com.app.Player p) {
         var scores_label = p.GetScoresLabel();
         scores_label.setText(_scores);
     }
     @Override
-    public void IncreaseShots(Player p){
+    public void IncreaseShots(com.app.Player p){
         var shots_label = p.GetShotsLabel();
         shots_label.setText(String.valueOf(Integer.parseInt(shots_label.getText()) + 1));
     }
@@ -98,7 +109,7 @@ public class ClientFrameController implements Observer, FrameController{
         Arrow a = new Arrow(arrowLines.get(playerNumber), arrowHeads.get(playerNumber));
         a.setVisible(true);
 
-        Player p = new Player(playerName, a, nameLabels.get(playerNumber), scoresLabels.get(playerNumber), shotsLabels.get(playerNumber));
+        var p = new com.app.Player(playerName, a, nameLabels.get(playerNumber), scoresLabels.get(playerNumber), shotsLabels.get(playerNumber));
         nameLabels.get(playerNumber).setText(playerName);
         if(playerName.equals(cl.GetPlayerName()))
             nameLabels.get(playerNumber).setStyle("-fx-font-weight: bold;");
@@ -114,7 +125,7 @@ public class ClientFrameController implements Observer, FrameController{
 
     @Override
     public void ArrowMove(String user_name, ArrayList<Double> headCords,  ArrayList<Double> lineCords) {
-        Player player = null;
+        com.app.Player player = null;
         for(var p : allPlayers) {
             if (p.GetPlayerName().equals(user_name)) {
                 player = p;
@@ -154,13 +165,24 @@ public class ClientFrameController implements Observer, FrameController{
         shot_button.setDisable(true);
     }
 
+    @Override
+    public void OnRecords(List<Player> playersRecords) {
+        TableView view = new HighScoreTable(playersRecords);
+        Pane pane = new Pane();
+        pane.getChildren().add(view);
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(pane));
+        stage.show();
+    }
+
     public void OnShot(String playerName) {
         shot_button.setDisable(true);
     }
 
     @Override
     public void ScoresChanged(String userName, String scores) {
-        Player player = null;
+        com.app.Player player = null;
         for(var p : allPlayers) {
             if (p.GetPlayerName().equals(userName)) {
                 player = p;
@@ -172,7 +194,7 @@ public class ClientFrameController implements Observer, FrameController{
 
     @Override
     public void ShotsChanged(String playerName) {
-        Player player = null;
+        com.app.Player player = null;
         for(var p : allPlayers) {
             if (p.GetPlayerName().equals(playerName)) {
                 player = p;

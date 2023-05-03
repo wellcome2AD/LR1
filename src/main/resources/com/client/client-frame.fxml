@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.app.ClientFrameController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.client.ClientFrameController">
    <children>
       <Line endX="14.0" endY="380.0" layoutX="352.0" layoutY="-30.0" startX="14.0" startY="30.0" />
       <Line endX="443.5" startX="443.5" startY="351.0" />
@@ -146,9 +146,10 @@
          </fill></Circle>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="406.0" layoutX="471.0" layoutY="-5.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="50.0" layoutX="-5.0" layoutY="351.0" stroke="BLACK" strokeType="INSIDE" width="477.0" />
-      <Button fx:id="start_game_button" layoutX="14.0" layoutY="364.0" mnemonicParsing="false" onAction="#onStartGameButtonClick" text="Начало игры" />
-      <Button fx:id="stop_game_button" layoutX="109.0" layoutY="364.0" mnemonicParsing="false" onAction="#onStopGameButtonClick" text="Остановить игру" />
-      <Button fx:id="shot_button" disable="true" layoutX="227.0" layoutY="364.0" mnemonicParsing="false" onAction="#OnShotButtonClick" text="Выстрел" />
+      <Button fx:id="start_game_button" layoutX="14.0" layoutY="364.0" mnemonicParsing="false" onAction="#onStartGameButtonClick" text="Готов" />
+      <Button fx:id="stop_game_button" layoutX="98.0" layoutY="364.0" mnemonicParsing="false" onAction="#onStopGameButtonClick" text="Пауза" />
+      <Button fx:id="shot_button" disable="true" layoutX="183.0" layoutY="364.0" mnemonicParsing="false" onAction="#OnShotButtonClick" text="Выстрел" />
+      <Button fx:id="record_button" layoutX="279.0" layoutY="364.0" mnemonicParsing="false" onMouseClicked="#OnRecordButtonClicked" text="Таблица рекордов" />
       <Label layoutX="485.0" layoutY="27.0" text="Счёт:">
          <font>
             <Font name="System Bold" size="15.0" />

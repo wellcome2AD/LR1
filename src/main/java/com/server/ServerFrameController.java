@@ -9,6 +9,7 @@ import javafx.scene.shape.Polygon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.server.Response.respType.*;
 
@@ -109,6 +110,10 @@ public class ServerFrameController implements Observer, FrameController {
             a.stopAnimation();
         }
     }
+
+    @Override
+    public void OnRecords(List<com.database.Player> playersRecords) {}
+
     @Override
     public void OnShot(String userName){
         ServerAnimation anim = null;
@@ -151,12 +156,16 @@ public class ServerFrameController implements Observer, FrameController {
     public void SetScores(String _scores, Player p){
         var scores_label = p.GetScoresLabel();
         var old_value = Integer.parseInt(scores_label.getText());
-        var new_value = Integer.parseInt(_scores);
-        scores_label.setText(String.valueOf(old_value + new_value));
+        var new_value = Integer.parseInt(_scores) + old_value;
+        scores_label.setText(String.valueOf(new_value));
         s.Broadcast(new Response(scoresNum, p.GetPlayerName(), scores_label.getText()));
 
-        if(Integer.parseInt(_scores) >= 10){
-            s.Broadcast(new Response(winGame, null, p.GetPlayerName()));
+        if(new_value >= 5){
+            var winnerName = p.GetPlayerName();
+            s.Broadcast(new Response(winGame, null, winnerName));
+            var player = s.player_service.findPlayer(winnerName);
+            player.SetWinCount(player.GetWinCount() + 1);
+            s.player_service.updatePlayer(player);
             OnWinGame(null);
         }
     }

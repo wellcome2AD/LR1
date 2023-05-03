@@ -3,6 +3,7 @@ package com.server;
 import com.app.Observer;
 import com.client.Client;
 import com.client.Request;
+import com.database.Player;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
@@ -51,7 +52,8 @@ public class ClientAtServer implements Runnable{
     public void SendToSocket(Response r){
         try {
             synchronized (dos) {
-                dos.writeUTF(gson.toJson(r));
+                var message = gson.toJson(r);
+                dos.writeUTF(message);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -74,6 +76,8 @@ public class ClientAtServer implements Runnable{
                     s.AddName(client_name);
                     for(var o : allObservers)
                         Platform.runLater(() -> o.AddPlayer(client_name));
+                    System.out.println("Client_name = " + client_name);
+                    s.player_service.savePlayer(new Player(client_name, 0));
                 }
                 SendToSocket(new Response(Response.respType.isNameUnique, client_name, isNameUnique));
                 s.Broadcast(new Response(Response.respType.newPlayer, null, client_name));
@@ -96,6 +100,14 @@ public class ClientAtServer implements Runnable{
                 for (var o : allObservers) {
                     Platform.runLater(() -> { o.OnShot(r.getClientName()); });
                 }
+            }
+            case getRecords -> {
+                var list = s.player_service.findAllPlayers();
+                for (var element : list)
+                {
+                    System.out.println(element);
+                }
+                SendToSocket(new Response(Response.respType.records, r.getClientName(), list));
             }
         }
     }

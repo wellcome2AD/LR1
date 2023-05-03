@@ -1,7 +1,7 @@
 package com.client;
 
 public class Request {
-    public enum message {isNameUnique, getAllPlayers, playerIsReady, pauseGame, arrowIsShot};
+    public enum message {isNameUnique, getAllPlayers, playerIsReady, pauseGame, arrowIsShot, getRecords};
     private message m;
     private String clientName;
     private Object data;

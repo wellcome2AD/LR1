@@ -2,6 +2,7 @@ package com.server;
 
 import com.app.FrameController;
 import com.app.Observer;
+import com.database.PlayerService;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -11,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Server {
+    public final PlayerService player_service = new PlayerService();
     final private ArrayList<ClientAtServer> allClientsHandlers = new ArrayList<>();
     final private ArrayList<String> allNames = new ArrayList<>();
     final private ArrayList<Observer> allObservers = new ArrayList<>();
@@ -22,7 +24,7 @@ public class Server {
         allObservers.add(o);
     }
     void StartServer(){
-        int port = 3124;
+        int port = 3125;
         InetAddress ip = null;
         try {
             ip = InetAddress.getLocalHost();

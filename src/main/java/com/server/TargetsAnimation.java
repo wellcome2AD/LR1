@@ -2,7 +2,7 @@ package com.server;
 
 import com.app.Observer;
 import com.app.target;
-import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 
@@ -33,6 +33,8 @@ public class TargetsAnimation implements Runnable{
         gameIsRunning.set(false);
         big_target.setCenterY(0);
         small_target.setCenterY(0);
+        speed1 = 2;
+        speed2 = speed1 * 2;
         bcastTargetMove(target.bigTarget, big_target.getCenterY());
         bcastTargetMove(target.smallTarget, small_target.getCenterY());
     }
@@ -42,9 +44,13 @@ public class TargetsAnimation implements Runnable{
     public void stopAnimation(){
         gameIsRunning.set(false);
     }
-    public Pair<Double, Double> GetTargetCord(target t){
+    public Pair<Double, Double> GetTargetCordOnScene(target t){
         var t_ref = t == target.bigTarget ? big_target : small_target;
-        var pair = new Pair<>(t_ref.getCenterX() + t_ref.getLayoutX(), t_ref.getCenterY() + t_ref.getLayoutY());
+        Point2D point;
+        synchronized (t_ref) {
+            point = t_ref.localToScene(t_ref.getCenterX(), t_ref.getCenterY());
+        }
+        var pair = new Pair<>(point.getX(), point.getY());
         return pair;
     }
     public double GetTargetRadius(target t){

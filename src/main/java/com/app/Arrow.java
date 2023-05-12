@@ -1,5 +1,6 @@
 package com.app;
 
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
@@ -51,8 +52,13 @@ public class Arrow {
         arrow_line.setStartX(lineCords.getKey());
         arrow_line.setEndX(lineCords.getValue());
     }
-    public Pair<Double, Double> GetHeadPoint(){
-        return new Pair<>(arrow_head.getPoints().get(2) + arrow_head.getLayoutX(), arrow_head.getPoints().get(3) + arrow_head.getLayoutY());
+    public Pair<Double, Double> GetHeadPointOnScene(){
+        var points = arrow_head.getPoints();
+        Point2D point;
+        synchronized (points) {
+            point = arrow_head.localToScene(points.get(2), points.get(3));
+        }
+        return new Pair<>(point.getX(), point.getY());
     }
     public ArrayList<Double> GetHeadCords(){
         var result = new ArrayList<Double>();

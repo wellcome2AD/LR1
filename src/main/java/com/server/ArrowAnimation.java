@@ -48,14 +48,14 @@ public class ArrowAnimation implements Runnable {
         }
     }
     private boolean doesArrowIntersectCircle(target t){
-        Pair<Double, Double> arrow_head_cords = arrow.GetHeadPoint();
-        var circle_center_cords = target_anim.GetTargetCord(t);
+        Pair<Double, Double> arrow_head_cords = arrow.GetHeadPointOnScene();
+        var circle_center_cords = target_anim.GetTargetCordOnScene(t);
         var circle_radius = target_anim.GetTargetRadius(t);
         return Math.pow((arrow_head_cords.getKey() - circle_center_cords.getKey()), 2) +
                 Math.pow((arrow_head_cords.getValue() - circle_center_cords.getValue()), 2) <= Math.pow(circle_radius, 2);
     }
     private boolean doesArrowMissTarget(){
-        return arrow.GetHeadPoint().getKey() >= 470;
+        return arrow.GetHeadPointOnScene().getKey() >= 470;
     }
     @Override
     public void run() {
